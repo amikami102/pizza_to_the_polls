@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/462455/7873b66b1aa84d94ad04ae3d0b798615
+bundleId: https://api.rpubs.com/api/v1/document/462455/7873b66b1aa84d94ad04ae3d0b798615
+url: http://rpubs.com/afmikami/462455
+when: 1548779397.19445

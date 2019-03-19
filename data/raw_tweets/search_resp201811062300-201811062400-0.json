@@ -1,0 +1,1 @@
+{"error": {"message": "There were errors processing your request: Invalid 'toDate':'201811062400'. 'toDate' must be in format 'yyyyMMddHHmm'. For example, '201101012315' for January 1st, 11:15 pm 2011 UTC", "sent": "2019-01-27T00:06:41+00:00", "transactionId": "002b838d009fb2b5"}}
