@@ -1,0 +1,12 @@
+name: pizza_to_the_polls
+title: pizza_to_the_polls
+username:
+account: asakomikami
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 843025
+bundleId: 1990563
+url: https://asakomikami.shinyapps.io/pizza_to_the_polls/
+when: 1554517559.73931
+asMultiple: FALSE
+asStatic: FALSE

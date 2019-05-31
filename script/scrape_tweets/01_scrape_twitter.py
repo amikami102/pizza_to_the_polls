@@ -9,9 +9,13 @@ import sys
 import base64
 import requests
 import logging
+import config # config.py
 
 # set up parser 
 parser = argparse.ArgumentParser(description='Scrape twitter')
+parser.add_argument('-credentials', type = str,
+                    help = "Directory storing credential json files.",
+                    default = "script/credentials")
 parser.add_argument('-scrapeddir', type = str,
                     help = 'Direcotry to store scraped data files', 
                     default = 'data/scraped')
@@ -34,11 +38,11 @@ log.addHandler(loghandler)
 """ STEP 0: OAuth2 Authorization """
 
 # Load my credentials from json file
-with open("twitter_credentials.json", "r") as file:  
-    creds = json.load(file)
+with open(os.path.join(args.credentials,"twitter_credentials.json"), "r") as j:
+    creds = json.load(j)
 
-client_key = creds['CONSUMER_KEY']
-client_secret = creds['CONSUMER_SECRET']
+client_key = creds['api_key']
+client_secret = creds['api_secret']
 
 # Encode my keys in base64 per instructed on 
 # https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
@@ -94,8 +98,8 @@ with open(os.path.join(args.datadir, "counts.json"), "w") as j:
 
 def request_search(fromDate, toDate, next_, pgcount):
     """
-    This function collects tweets posted by @PizzaToThePolls during
-    the 2018 midterm election during the hour 'fromDate' to 'toDate'.
+    This function collects tweets posted by @PizzaToThePolls on
+    2018 midterm Election during the hour 'fromDate' to 'toDate'.
     Some hours are busier than others and will require multiple responses to 
     cover all the data pages.
     ======================
