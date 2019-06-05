@@ -9,7 +9,7 @@ import sys
 import base64
 import requests
 import logging
-import config # config.py
+
 
 # set up parser 
 parser = argparse.ArgumentParser(description='Scrape twitter')
@@ -40,7 +40,6 @@ log.addHandler(loghandler)
 # Load my credentials from json file
 with open(os.path.join(args.credentials,"twitter_credentials.json"), "r") as j:
     creds = json.load(j)
-
 client_key = creds['api_key']
 client_secret = creds['api_secret']
 
@@ -88,27 +87,26 @@ else:
 
 # Save to file
 count_data = count_resp.json()
-with open(os.path.join(args.datadir, "counts.json"), "w") as j:
+with open(os.path.join("data", "counts.json"), "w") as j:
     json.dump(count_data, j)
 
 
 
 """ STEP 2: Scrape tweets per hour """ 
 
-
-def request_search(fromDate, toDate, next_, pgcount):
+def request_search(fromHour, toHour, next_, pgcount):
     """
     This function collects tweets posted by @PizzaToThePolls on
-    2018 midterm Election during the hour 'fromDate' to 'toDate'.
+    2018 Election Day during the hour 'fromDate' to 'toDate'.
     Some hours are busier than others and will require multiple responses to 
     cover all the data pages.
     ======================
     fromDate = 'YYYYMMDDHHMM'
     toDate = 'YYYYMMDDHHMM'
-    pgcount = (int indictating page count)
+    pgcount = (int, page counter)
     next_ = (str token for the next page of search result)
     """
-    request_out = [] # output list 
+
     
     # set the search parameters
     search_params = {'query': '@PizzaToThePolls',
@@ -140,6 +138,7 @@ def request_search(fromDate, toDate, next_, pgcount):
     
     # Scrape the date created, text, and id of each tweet 
     # in the search response. Add the dictionary to output list.
+    request_out = []
     for res in search_data['results']:
         t = {'created_at': res['created_at'], 
              'text': res['text'], 
@@ -165,18 +164,16 @@ def request_search(fromDate, toDate, next_, pgcount):
 
 if __name__ == "__main__":
     
-    current_dir = os.getcwd()
-    
     with open(os.path.join(args.datadir, "counts.json"), "r") as j:
        counts = json.load(j)['results']
     for count in counts:
-       fromDate = count['timePeriod']
-       toDate = str(int(fromDate) + 100)
+       fromHour = count['timePeriod']
+       toHour = str(int(fromHour) + 100)
        c = 0
-       to_next = request_search(fromDate, toDate, pgcount = c, next_ = 0)
+       to_next = request_search(fromHour, toHour, pgcount = c, next_ = 0)
        while(to_next != 0):
            c += 1
-           to_next = request_search(fromDate, toDate, pgcount = c, next_ = to_next)
+           to_next = request_search(fromHour, toHour, pgcount = c, next_ = to_next)
     sys.exit()
            
            
