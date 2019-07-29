@@ -5,23 +5,15 @@ x <- c("tidyverse", "magrittr", "RColorBrewer", "rio",
        "tidycensus")
 lapply(x, library, character.only = TRUE, quietly = TRUE)
 
-## @knitr pizzapolls
-# prepare pizzapolls
-pizzapolls <- import(file.path("data", "csv", "PizzaToThePolls.csv"), 
-                     format = "csv", 
-                     header = TRUE) %>%
-        mutate(id = as.character(id)) %>%
-        st_as_sf(coords = c("lng", "lat")) %>%
-        as('Spatial') 
-crs(pizzapolls) <- crs(us_county)
+
 
 
 ## @knitr read_shpfile
 ## read .shp file as SpatialPolygonsDataFrame
 district <- "cb_2016_us_cd115_500k"
 county <- "cb_2016_us_county_500k"
-us_cd <- readOGR(dsn = file.path("data", "shp", district), layer = district)
-us_county <- readOGR(dsn = file.path("data", "shp", county), layer = county)
+us_cd <- readOGR(dsn = file.path("data/shp", district), layer = district)
+us_county <- readOGR(dsn = file.path("data/shp", county), layer = county)
 
 
 ## merge us_cd with election data scraped from Wikipedia
@@ -36,6 +28,16 @@ us_cd@data %<>% dplyr::select(-AFFGEOID, -GEOID, -LSAD,-CDSESSN,
         left_join(states, by = c("STATEFP" = "state_code")) %>% 
         mutate(label = paste(state, CD115FP, sep = "-")) %>%
         left_join(house, by = c("label" = "V1")) 
+
+## @knitr pizzapolls
+# prepare pizzapolls
+pizzapolls <- import(file.path("data/csv", "PizzaToThePolls.csv"), 
+                     format = "csv", 
+                     header = TRUE) %>%
+        mutate(id = as.character(id)) %>%
+        st_as_sf(coords = c("lng", "lat")) %>%
+        as('Spatial') 
+crs(pizzapolls) <- crs(us_county)
 
 
 ## @knitr acs_data

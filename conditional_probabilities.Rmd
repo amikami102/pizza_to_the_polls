@@ -4,30 +4,24 @@ output: html_document
 ---
 
 This notebook investigates whether a polling location had pizzas requested to and delivered by `@PizzaToThePolls` is conditional on factors such as the percentage of black population in the county and the electoral competitiveness of the district or state. 
-```{r, message = FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-setwd("/Users/asako/Google Drive/pizza_to_the_polls")
+```{r, message = FALSE, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, 
+                      comment = FALSE)
 knitr::read_chunk("script/merge_with_acs.R")
 ```
 
-```{r setup}
+```{r setup, message = FALSE, results = "hide"}
 
 ```
 
-This 
+
+
+
+```{r read_shpfile, message = FALSE}
+
+```
+
 ```{r pizzapolls}
-
-```
-
-```{r read_shpfile}
-
-```
-
-```{r acs_data}
-
-```
-
-```{r calc_conditionalprob}
 
 ```
 
