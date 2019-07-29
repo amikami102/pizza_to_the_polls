@@ -56,7 +56,7 @@ def clean_tweet(tweet):
 
 def find_address(jsonfile):
     """
-    Cleans tweet text and adds to tweet dictionary.
+    Cleans tweet text.
     Adds entry {'contain_address': (logical)} to tweet dictionary where 
     (logical) indicates whether the cleaned tweet contains street addresses.
     ===================
@@ -89,7 +89,7 @@ def find_address(jsonfile):
     # Log how many tweets were found containing address
     message = "{} tweets containing address".format(c)
     log.info(message)
-    print(message)
+#print(message)
         
 
 
@@ -118,7 +118,7 @@ def get_address(tweet):
 
 def parse_address(resp):
     """
-    Parses the `pass_address` response output and constructs
+    Parses the `get_address` response output and constructs
     dictionary output to be returned.
     =====================
     resp (the response xml output of `get_address`)
