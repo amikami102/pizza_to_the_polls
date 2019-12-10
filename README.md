@@ -1,6 +1,10 @@
 # About the project
 
-See [my blogpost](https://asakomikami.com/2019/04/03/introduce-pizza-to-the-polls/) for more information about this project. 
+I was watching my Twitter feed during the 2018 Midterm election and came across a tweet by Pizza To The Polls saying that it had sent pizzas to some polling location in response to a request. At that point in time, I was vaguely interested in electoral integrity of American elections.  One way to suppress voting is to close polling stations or remove voting machines. I was interested in locating long polling lines, but data on polling locations is not publicly available. Although some states allow you to purchase the data, most states do not disclose this information. So when I saw the tweets by Pizza To The Polll and that they contained addresses, I thought it would be an inexpensive alternative for getting the data. 
+
+
+
+# Tutorials based on this project
 
 I am also writing a blog post series on how to use Twitter API to make search requests with premium subscription. 
 
