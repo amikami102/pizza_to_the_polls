@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+
 """
-List of US states, full name and abbreviated. 
+List of US states, full and abbreviated names. 
 """
 
 states = ["Alabama","Alaska","Arizona","Arkansas","California","Colorado",

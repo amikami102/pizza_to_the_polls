@@ -1,9 +1,9 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-MD-01,Andy Harris,Jesse Colvin,Republican,Democratic,60.0%,38.1%
-MD-02,Dutch Ruppersberger,Liz Matory,Democratic,Republican,66.0%,30.7%
-MD-03,John Sarbanes,Charles Anthony,Democratic,Republican,69.1%,28.3%
-MD-04,Anthony G. Brown,George McDermott,Democratic,Republican,78.1%,19.9%
-MD-05,Steny Hoyer,William Devine III,Democratic,Republican,70.3%,27.1%
-MD-06,David Trone,Amie Hoeber,Democratic,Republican,59.0%,38.0%
-MD-07,Elijah Cummings,Richmond Davis,Democratic,Republican,76.4%,21.3%
-MD-08,Jamie Raskin,John Walsh,Democratic,Republican,68.2%,30.2%
+MD-01,Andy Harris,Jesse Colvin,Republican,Democratic,60.0,38.1
+MD-02,Dutch Ruppersberger,Liz Matory,Democratic,Republican,66.0,30.7
+MD-03,John Sarbanes,Charles Anthony,Democratic,Republican,69.1,28.3
+MD-04,Anthony G. Brown,George McDermott,Democratic,Republican,78.1,19.9
+MD-05,Steny Hoyer,William Devine III,Democratic,Republican,70.3,27.1
+MD-06,David Trone,Amie Hoeber,Democratic,Republican,59.0,38.0
+MD-07,Elijah Cummings,Richmond Davis,Democratic,Republican,76.4,21.3
+MD-08,Jamie Raskin,John Walsh,Democratic,Republican,68.2,30.2

@@ -9,19 +9,21 @@ import sys
 import base64
 import requests
 import logging
-
+from dotenv import load_dotenv
+load_dotenv()
 
 # set up parser 
 parser = argparse.ArgumentParser(description='Scrape twitter')
 parser.add_argument('-credentials', type = str,
                     help = "Directory storing credential json files.",
                     default = "script/credentials")
-parser.add_argument('-scrapeddir', type = str,
-                    help = 'Direcotry to store scraped data files', 
-                    default = 'data/scraped')
 parser.add_argument('-rawdir', type = str,
-                    help = 'Directory to store raw responses',
-                    default = 'data/raw')
+                    help = 'Directory to store raw JSON responses',
+                    default = 'data/raw')                    
+parser.add_argument('-script01dir', type = str,
+                    help = 'Direcotry to store 01_scrape_twitter.py output files', 
+                    default = 'data/script01')
+
 parser.add_argument('-v','--verbose', 
                     help = "Set log level to debug", action="store_true")
 args = parser.parse_args()
@@ -38,17 +40,14 @@ log.addHandler(loghandler)
 """ STEP 0: OAuth2 Authorization """
 
 # Load my credentials from json file
-with open(os.path.join(args.credentials,"twitter_credentials.json"), "r") as j:
-    creds = json.load(j)
-client_key = creds['api_key']
-client_secret = creds['api_secret']
+client_key = os.getenv('twitter_api_key')
+client_secret = os.getenv('twitter_api_secret')
 
 # Encode my keys in base64 per instructed on 
 # https://developer.twitter.com/en/docs/basics/authentication/overview/application-only
 key_secret = '{}:{}'.format(client_key, client_secret).encode('ascii')
 b64_encoded_key = base64.b64encode(key_secret)
 b64_encoded_key = b64_encoded_key.decode('ascii')
-
 
 # Build authorization request 
 auth_url = 'https://api.twitter.com/oauth2/token'
@@ -146,7 +145,7 @@ def request_search(fromHour, toHour, next_, pgcount):
         request_out.append(t)
     
     # Save to file
-    with open(os.path.join(args.datadir, "scraped" + filename +".json"), "w") as j:
+    with open(os.path.join(args.script01dir, "scraped" + filename +".json"), "w") as j:
         json.dump(request_out, j)
     
     # Get 'next' token for the next page if exists, else stop.
@@ -164,7 +163,7 @@ def request_search(fromHour, toHour, next_, pgcount):
 
 if __name__ == "__main__":
     
-    with open(os.path.join(args.datadir, "counts.json"), "r") as j:
+    with open(os.path.join("data", "counts.json"), "r") as j:
        counts = json.load(j)['results']
     for count in counts:
        fromHour = count['timePeriod']

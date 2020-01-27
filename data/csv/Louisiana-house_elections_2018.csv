@@ -1,7 +1,7 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-LA-01,Steve Scalise,Tammy Savoie,Republican,Democratic,71.5%,16.4%
-LA-02,Cedric Richmond,Jesse Schmidt,Democratic,Independent,80.6%,8.7%
-LA-03,Clay Higgins,Mimi Methvin,Republican,Democratic,55.7%,17.8%
-LA-04,Mike Johnson,Ryan Trundle,Republican,Democratic,64.2%,33.6%
-LA-05,Ralph Abraham,Jessee Carlton Fleenor,Republican,Democratic,66.5%,30.0%
-LA-06,Garret Graves,Justin DeWitt,Republican,Democratic,69.5%,20.5%
+LA-01,Steve Scalise,Tammy Savoie,Republican,Democratic,71.5,16.4
+LA-02,Cedric Richmond,Jesse Schmidt,Democratic,Independent,80.6,8.7
+LA-03,Clay Higgins,Mimi Methvin,Republican,Democratic,55.7,17.8
+LA-04,Mike Johnson,Ryan Trundle,Republican,Democratic,64.2,33.6
+LA-05,Ralph Abraham,Jessee Carlton Fleenor,Republican,Democratic,66.5,30.0
+LA-06,Garret Graves,Justin DeWitt,Republican,Democratic,69.5,20.5

@@ -11,9 +11,9 @@ import pandas as pd
 
 # set up arg parser 
 parser = argparse.ArgumentParser(description='Clean and process tweets')
-parser.add_argument('-parseddir', type = str,
-                    help = "Directory storing parsed tweet json files",
-                    default = "data/parsed")
+parser.add_argument('-script02dir', type = str,
+                    help = "Directory storing outputs from 02_clean_and_process.py",
+                    default = "data/tweets/script02")
 parser.add_argument('-shpdir', type = str,
                     help = "Directory storing shp files",
                     default = "data/shp")
@@ -39,18 +39,18 @@ if __name__ == "__main__":
     
     colnames = ("st_num", "route", "city", "state_abbv",
                 "zipcode", "county", "lng", "lat", 
-                "created_at", "id")
+                "created_at", "id", "clean_text")
     df = pd.DataFrame(columns = colnames)
     
-    # create a list of files in "data/parsed"
+    # create a list of files in "data/tweets/script02"
     parsed_list = []
-    for file in sorted(os.listdir(args.parseddir)):
-        if file.endswith(".json"):
+    for file in sorted(os.listdir(args.script02dir)):
+        if (file.startswith("parsed") and file.endswith(".json")):
             parsed_list.append(file)
     
     # iterate over `parsed_list`
     for file in parsed_list:
-        with open(os.path.join(args.parseddir, file), "r") as p:
+        with open(os.path.join(args.script02dir, file), "r") as p:
             tweets = json.load(p)
         for tweet in tweets:
             if tweet.get('contain_address') == True:
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                                sort = True)
             else:
                 pass
-    df = df.dorpna() # drop rows with any missing values
+                
     csv_path = os.path.join(args.csvdir, "PizzaToThePolls.csv")
     df.to_csv(csv_path)
     sys.exit()

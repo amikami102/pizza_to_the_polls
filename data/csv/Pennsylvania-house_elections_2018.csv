@@ -1,18 +1,18 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-PA-01,Brian Fitzpatrick,Scott Wallace,Republican,Democratic,51.3%,48.7%
-PA-10,Scott Perry,George Scott,Republican,Democratic,51.3%,48.7%
-PA-11,Lloyd Smucker,Jess King,Republican,Democratic,59.0%,41.0%
-PA-12,Tom Marino,Marc Friedenburg,Republican,Democratic,66.0%,34.0%
-PA-13,John Joyce,Brent Ottaway,Republican,Democratic,70.5%,29.5%
-PA-14,Guy Reschenthaler,Bibiana Boerio,Republican,Democratic,57.9%,42.1%
-PA-15,G.T. Thompson,Susan Boser,Republican,Democratic,67.8%,32.2%
-PA-16,Mike Kelly,Ronald DiNicola,Republican,Democratic,51.6%,47.3%
-PA-17,Conor Lamb,Keith Rothfus,Democratic,Republican,56.3%,43.7%
-PA-02,Brendan Boyle,David Torres,Democratic,Republican,79.0%,21.0%
-PA-03,Dwight Evans,Bryan E. Leib,Democratic,Republican,93.4%,6.6%
-PA-04,Madeleine Dean,Dan David,Democratic,Republican,63.5%,36.5%
-PA-05,Mary Gay Scanlon,Pearl Kim,Democratic,Republican,65.2%,34.8%
-PA-06,Chrissy Houlahan,Greg McCauley,Democratic,Republican,58.9%,41.1%
-PA-07,Susan Wild,Marty Nothstein,Democratic,Republican,53.5%,43.5%
-PA-08,Matt Cartwright,John Chrin,Democratic,Republican,54.6%,45.4%
-PA-09,Dan Meuser,Denny Wolff,Republican,Democratic,59.7%,40.3%
+PA-01,Brian Fitzpatrick,Scott Wallace,Republican,Democratic,51.3,48.7
+PA-10,Scott Perry,George Scott,Republican,Democratic,51.3,48.7
+PA-11,Lloyd Smucker,Jess King,Republican,Democratic,59.0,41.0
+PA-12,Tom Marino,Marc Friedenburg,Republican,Democratic,66.0,34.0
+PA-13,John Joyce,Brent Ottaway,Republican,Democratic,70.5,29.5
+PA-14,Guy Reschenthaler,Bibiana Boerio,Republican,Democratic,57.9,42.1
+PA-15,G.T. Thompson,Susan Boser,Republican,Democratic,67.8,32.2
+PA-16,Mike Kelly,Ronald DiNicola,Republican,Democratic,51.6,47.3
+PA-17,Conor Lamb,Keith Rothfus,Democratic,Republican,56.3,43.7
+PA-02,Brendan Boyle,David Torres,Democratic,Republican,79.0,21.0
+PA-03,Dwight Evans,Bryan E. Leib,Democratic,Republican,93.4,6.6
+PA-04,Madeleine Dean,Dan David,Democratic,Republican,63.5,36.5
+PA-05,Mary Gay Scanlon,Pearl Kim,Democratic,Republican,65.2,34.8
+PA-06,Chrissy Houlahan,Greg McCauley,Democratic,Republican,58.9,41.1
+PA-07,Susan Wild,Marty Nothstein,Democratic,Republican,53.5,43.5
+PA-08,Matt Cartwright,John Chrin,Democratic,Republican,54.6,45.4
+PA-09,Dan Meuser,Denny Wolff,Republican,Democratic,59.7,40.3

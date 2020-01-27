@@ -1,10 +1,10 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-MO-01,Lacy Clay,Robert Vroman,Democratic,Republican,80.1%,16.7%
-MO-02,Ann Wagner,Cort VanOstran,Republican,Democratic,51.2%,47.2%
-MO-03,Blaine Luetkemeyer,Katy Geppert,Republican,Democratic,65.1%,32.8%
-MO-04,Vicky Hartzler,Renee Hoagenson,Republican,Democratic,64.8%,32.7%
-MO-05,Emanuel Cleaver,Jacob Turk,Democratic,Republican,61.7%,35.6%
-MO-06,Sam Graves,Henry Martin,Republican,Democratic,65.4%,32.0%
-MO-07,Billy Long,Jamie Schoolcraft,Republican,Democratic,66.2%,30.1%
-MO-08,Jason Smith,Kathy Ellis,Republican,Democratic,73.4%,25.0%
-Results_Summary,Lacy Clay,Robert Vroman,Democratic,Republican,80.1%,16.7%
+MO-01,Lacy Clay,Robert Vroman,Democratic,Republican,80.1,16.7
+MO-02,Ann Wagner,Cort VanOstran,Republican,Democratic,51.2,47.2
+MO-03,Blaine Luetkemeyer,Katy Geppert,Republican,Democratic,65.1,32.8
+MO-04,Vicky Hartzler,Renee Hoagenson,Republican,Democratic,64.8,32.7
+MO-05,Emanuel Cleaver,Jacob Turk,Democratic,Republican,61.7,35.6
+MO-06,Sam Graves,Henry Martin,Republican,Democratic,65.4,32.0
+MO-07,Billy Long,Jamie Schoolcraft,Republican,Democratic,66.2,30.1
+MO-08,Jason Smith,Kathy Ellis,Republican,Democratic,73.4,25.0
+Results_Summary,Lacy Clay,Robert Vroman,Democratic,Republican,80.1,16.7

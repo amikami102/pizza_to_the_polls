@@ -1,6 +1,6 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-OR-01,Suzanne Bonamici,John Verbeek,Democratic,Republican,63.6%,32.1%
-OR-02,Greg Walden,Jamie McLeod-Skinner,Republican,Democratic,56.3%,39.4%
-OR-03,Earl Blumenauer,Tom Harrison,Democratic,Republican,72.6%,19.8%
-OR-04,Peter DeFazio,Art Robinson,Democratic,Republican,56.0%,40.9%
-OR-05,Kurt Schrader,Mark Callahan,Democratic,Republican,55.0%,41.8%
+OR-01,Suzanne Bonamici,John Verbeek,Democratic,Republican,63.6,32.1
+OR-02,Greg Walden,Jamie McLeod-Skinner,Republican,Democratic,56.3,39.4
+OR-03,Earl Blumenauer,Tom Harrison,Democratic,Republican,72.6,19.8
+OR-04,Peter DeFazio,Art Robinson,Democratic,Republican,56.0,40.9
+OR-05,Kurt Schrader,Mark Callahan,Democratic,Republican,55.0,41.8

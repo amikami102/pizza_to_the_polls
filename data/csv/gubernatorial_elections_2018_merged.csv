@@ -1,0 +1,37 @@
+,state,candidate1,candidate2,party1,party2,percentage1,percentage2,incumbent,name_woman,party_woman,result_woman,status_woman
+0,AL,Kay Ivey,Walter Maddox,Republican,Democratic,59.5,40.4,Republican,Kay Ivey,Republican,WON,I
+1,AK,Mike Dunleavy,Mark Begich,Republican,Democratic,51.4,44.4,Independent,,,,
+2,AZ,Doug Ducey,David Garcia,Republican,Democratic,56.0,41.8,Republican,,,,
+3,AR,Asa Hutchinson,Jared Henderson,Republican,Democratic,65.3,31.8,Republican,,,,
+4,CA,Gavin Newsom,John H. Cox,Democratic,Republican,61.9,38.1,Democratic,,,,
+5,CO,Jared Polis,Walker Stapleton,Democratic,Republican,53.4,42.8,Democratic,,,,
+6,CT,Ned Lamont,Bob Stefanowski,Democratic,Republican,49.4,46.2,Democratic,,,,
+7,FL,Ron DeSantis,Andrew Gillum,Republican,Democratic,49.6,49.2,Republican,,,,
+8,GA,Brian Kemp,Stacey Abrams,Republican,Democratic,50.2,48.8,Republican,Stacey Abrams,Democratic,Lost,O
+9,HI,David Ige,Andria Tupola,Democratic,Republican,62.7,33.7,Democratic,Andria P.L. Tupola,Republican,Lost,C
+10,ID,Brad Little,Paulette Jordan,Republican,Democratic,59.8,38.2,Republican,Paulette Jordan,Democratic,Lost,O
+11,IL,J. B. Pritzker,Bruce Rauner,Democratic,Republican,54.5,38.8,Republican,,,,
+12,IA,Kim Reynolds,Fred Hubbell,Republican,Democratic,50.3,47.5,Republican,Kim Reynolds,Republican,WON,I
+13,KS,Laura Kelly,Kris Kobach,Democratic,Republican,48.0,43.0,Republican,Laura Kelly,Democratic,WON,O
+14,ME,Janet Mills,Shawn Moody,Democratic,Republican,50.9,43.2,Republican,Janet Mills,Democratic,WON,O
+15,MD,Larry Hogan,Ben Jealous,Republican,Democratic,55.4,43.5,Republican,,,,
+16,MA,Charlie Baker,Jay Gonzalez,Republican,Democratic,66.6,33.1,Republican,,,,
+17,MI,Gretchen Whitmer,Bill Schuette,Democratic,Republican,53.3,43.8,Republican,Gretchen Whitmer,Democratic,WON,O
+18,MN,Tim Walz,Jeff Johnson,Democratic–Farmer–Labor,Republican,53.8,42.4,Democratic–Farmer–Labor,,,,
+19,NE,Pete Ricketts,Bob Krist,Republican,Democratic,59.0,41.0,Republican,,,,
+20,NV,Steve Sisolak,Adam Laxalt,Democratic,Republican,49.4,45.3,Republican,,,,
+21,NH,Chris Sununu,Molly Kelly,Republican,Democratic,52.8,45.7,Republican,Molly M. Kelly,Democratic,Lost,C
+22,NM,Michelle Lujan Grisham,Steve Pearce,Democratic,Republican,57.2,42.8,Republican,Michelle Lujan Grisham,Democratic,WON,O
+23,NY,Andrew Cuomo,Marc Molinaro,Democratic,Republican,59.62,36.21,Democratic,,,,
+24,OH,Mike DeWine,Richard Cordray,Republican,Democratic,50.4,46.7,Republican,,,,
+25,OK,Kevin Stitt,Drew Edmondson,Republican,Democratic,54.3,42.2,Republican,,,,
+26,OR,Kate Brown,Knute Buehler,Democratic,Republican,50.1,43.7,Democratic,Kate Brown,Democratic,WON,I
+27,PA,Tom Wolf,Scott Wagner,Democratic,Republican,57.8,40.7,Democratic,,,,
+28,RI,Gina Raimondo,Allan Fung,Democratic,Republican,52.6,37.2,Democratic,Gina Raimondo,Democratic,WON,I
+29,SC,Henry McMaster,James Smith,Republican,Democratic,54.0,45.9,Republican,,,,
+30,SD,Kristi Noem,Billie Sutton,Republican,Democratic,51.0,47.6,Republican,Kristi Lynn Noem,Republican,WON,O
+31,TN,Bill Lee,Karl Dean,Republican,Democratic,59.6,38.5,Republican,,,,
+32,TX,Greg Abbott,Lupe Valdez,Republican,Democratic,55.8,42.5,Republican,Lupe Valdez,Democratic,Lost,C
+33,VT,Phil Scott,Christine Hallquist,Republican,Democratic,55.4,40.4,Republican,Christine Hallquist,Democratic,Lost,C
+34,WI,Tony Evers,Scott Walker,Democratic,Republican,49.5,48.4,Republican,,,,
+35,WY,Mark Gordon,Mary Throne,Republican,Democratic,67.1,27.5,Republican,Mary Throne,Democratic,Lost,O

@@ -1,6 +1,6 @@
 # ignore all credential files
 script/credentials/
-
+.env
 
 
 # Compiled source #
@@ -44,3 +44,4 @@ __pycache__
 .ipynb_checkpoints
 .Rproj.user
 .Rproj
+.pyc

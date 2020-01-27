@@ -1,4 +1,4 @@
 ,candidate1,candidate2,party1,party2,share1,share2
-NE-01,Jeff Fortenberry,Jessica McClure,Republican,Democratic,60.4%,39.6%
-NE-02,Don Bacon,Kara Eastman,Republican,Democratic,51.0%,49.0%
-NE-03,Adrian Smith,Paul Theobald,Republican,Democratic,76.7%,23.3%
+NE-01,Jeff Fortenberry,Jessica McClure,Republican,Democratic,60.4,39.6
+NE-02,Don Bacon,Kara Eastman,Republican,Democratic,51.0,49.0
+NE-03,Adrian Smith,Paul Theobald,Republican,Democratic,76.7,23.3

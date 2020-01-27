@@ -1,0 +1,5 @@
+# of accounts mentioning 'house': 13
+# of accounts mentioning 'senator': 4
+# of accounts mentioning 'governor': 1
+# of accounts mentioning 'candidate': 3
+# of accounts mentioning 'campaign': 5
