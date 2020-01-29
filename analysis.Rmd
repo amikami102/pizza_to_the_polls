@@ -1,5 +1,5 @@
 ---
-title: "Web Scraping and GIS | Locating Long Polling Lines with Twitter Data"
+title: "Web Scraping, GIS, Bag of Words, and Regression | Locating Long Polling Lines with Twitter Data"
 author: "Asako Mikami"
 date: '`r format(Sys.time(), "%B %e, %Y")`'
 output: 
@@ -16,13 +16,11 @@ lapply(x, library, character.only = TRUE, quietly = TRUE, verbose = FALSE)
 rm(x)
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
                       fig.align = "center")
-```
-
-```{r load_data}
 load("data/clean_pizza.Rdata")
 load("data/2018-election-results.Rdata")
 load("data/map_data.Rdata")
 load("data/acs_cd.Rdata")
+load("data/mod_df.Rdata")
 ```
 
 
@@ -65,7 +63,7 @@ I used Twitter API to [search for tweets](https://developer.twitter.com/en/docs/
 ### Searching for tweets 
 
 ```{r}
-load("data/counts.rds")
+load("data/counts.Rdata")
 ```
 
 For tweets, first I made a count query asking how many tweets were posted per hour by PttP from 00:00 of November 6th, 2018 to 02:00 of November 7th, 2018.[^timezone] Inspecting the query response, I saw that there were few pizza deliveries made before 11:00 of November 6th, and since most polls were closed by midnight, I decided to restrict the timeframe from 11:00 and 23:59 of November 6th, 2018. In total, I retrieved `r sum(raw_counts$count) %>% format(big.mark = ",", scientific = FALSE)` raw tweets. The figure below shows the hourly distribution. 
@@ -310,75 +308,43 @@ summary(mod_base)
 ```
 
 - Even though all three coefficients are statistically significant, the sign of the coefficient for `key_rep` dummy variable is negative while the coefficient signs for `key_sen` and `key_gov` dummies are positive. This is incongruent with our hypothesis that key races are more likely to expose voters to the presence of PttP and its nonprofit service. 
-- The coefficient signs for the factor variables `women_sen`, `women_rep`, and `women_gov` 
-are positive. Having both leading candidates women (`women_sen2`) and a women candidate for governor (`women_gov1`) are significant at 0.01 significance level. This is generally congruent with our hypothesis that elections with women candidates are more salient and therefore likely to connect supporters to services like that of PttP.
-- The coefficient of `blackPopShare_log` is statistically significant in the positive direction. However, the scatterplot in \@ref(fig:ggpair_num)) suggests that this may due to influential points.
+- The coefficient signs for variables `women_sen`, `women_rep`, and `women_gov` are positive. Having both leading candidates women (`women_sen2`) and a women candidate for governor (`women_gov1`) are significant at 0.01 significance level. This is generally congruent with our hypothesis that elections with women candidates are more salient and therefore likely to connect supporters to services like that of PttP.
+- The coefficient of `blackPop_log` is statistically significant in the positive direction although this may be due to some outlier.
+
+
 
 
 ```{r}
-sigma <- influence(mod_base)$sigma
-sigma_points <- sigma[sigma < 2.26] %>% names() %>% as.numeric()
-cooksd <- cooks.distance(mod_base)
-cooksd_points <- cooksd[cooksd > 0.5] %>% names() %>% as.numeric()
-outlier_points <- union(sigma_points, cooksd_points)
-outliers <- all$label[outlier_points]
+preds <- predict(mod_base, type = "response") # estimated means
+prob0 <- dpois(x = 0, lambda = preds)
+sum(prob0)
 ```
-
-Figure \@ref(fig:base_diagnostic)) shows residuals (`resid`), leave-one-out sigma ($\sigma_{[-i]}$) and Cook's distance ($D_i$) for each explanatory variable. In all of these diagnostic plots, there seems to be three or four outliers that have significant influence on the model's fit. The outlier observations with $\sigma_{[-i]}$ less than 2.26 or $D_i$ greater than 0.5 are districts `r outliers`. 
-
-
-```{r base_diagnostic, results = "asis", warning=FALSE, message = FALSE}
-ggnostic(mod_base, columnsY = c(".resid", ".sigma", ".cooksd")) 
-```
-
-```{r}
-df <- mod_df %>% 
-    filter(label %in% outliers) %>%
-    dplyr::select(key_rep, candidate1, candidate2, party1, party2, share1, share2, women_rep,
-           key_sen, candidate1_sen, candidate2_sen, party1_sen, party2_sen, share1_sen, share2_sen, women_sen,
-           key_gov, candidate1_gov, candidate2_gov, party1_gov, party2_gov, share1_gov, share2_gov, women_gov, label)
-lst <- setNames(by_row(df, ~ unlist(.x), .collate = "list")$.out,
-                df$label)
-jsonedit(lst, mode = "view")
-```
-
-
-
-
 
 #### Zero-inflated Poisson regression model
 
-Since the base model does not accou t for the excess zeros in the sample, a better performing model should take into account that districts that have at least one outcome count may be qualitatively different from those that did not have zero count. The model I choose is zero-inflated Poisson, aka mixed Poisson regression. This model assumes that 
-    $$\rm{E}[\text{count}_i = k] = P(\text{count}_i = 0) * 0 + P(\text{count}_i > 0) * \rm{E}[\text{count}_i = k \, | \, \text{count}_i > 0],$$
-i.e. the count data is model conditional on the logit model predicting $P(\text{count}_i = 0)$. I will use the same set of predictors as the base model regression equation. 
+Since the base model does not account for the excess zeros in the sample, a better performing model should do just that. 
 
-```{r, results = "asis"}
+
+```{r}
 library(pscl)
-mod_inflated <- zeroinfl(count ~ key_rep + key_sen + key_gov + 
+mod_hurdle <- hurdle(count ~ key_rep + key_sen + key_gov + 
                women_rep + women_sen + women_gov +  
                medianHouseInc_log + totalPop_log +
                blackPop_log + age18to24_log,
-               data = mod_df)
-summary(mod_inflated)
+           data = mod_df, dist = "poisson", zero.dist = "binomial")
+summary(mod_hurdle)
 ```
 
-The result for the count outcome is very similar to the base model result. In both models, the number of leading women candidates in the Senate and governor races is significantly associated with higher count values. Unlike the base model though, the share of blacks in the population (`blackPop_log`) is not significant when predicting count values. Even when it comes to the logistic compoenent of the model, `blackPopShare_log` has negative coefficient. 
-
-
-
-
-
-I will compare the base Poisson model against the zero-inflated Poisson model using Vuong's non-nested test. The result printed below shows that the zero-inflated Poisson model (`model2`) is significantly different from and superior to the base model (`model1`). 
-
-```{r}
-library(MASS)
-vuong(mod_base, mod_inflated)
-```
 
 
 # Lessons for the 2020 election
 
-The anticipation of the 2018 election was that the Democrats would take at least the House majority while the forecast for the Democrats taking the Senate was unpropitious. The outliers in the previous 
+If I were working at Pizza to the Polls and was tasked with improving the organization's outreach (assuming there's enough funds to cover all pizza requests), I would recommend the following:
+
+- focus on key Senate and gubernatorial elections;
+- reach out to women candidates. 
+
+The anticipation of the 2018 election was that the Democrats would take at least the House majority while the forecast for the Democrats taking the Senate was unpropitious. My analysis, however, show that the districts that asked for the most pizzas were those voting for competitive Senate and governor races. 
 
 
 # What I learned from this project

@@ -69,4 +69,4 @@ ggplot(data = counts, mapping = aes(x = timePeriod, y = count_parsed)) +
 ggsave("fig/parsed_tweets_per_hour.png")
 
 
-save(raw_counts, parsed_counts, file = "data/counts.rda")
+save(raw_counts, parsed_counts, file = "data/counts.Rdata")

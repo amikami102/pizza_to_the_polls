@@ -66,7 +66,7 @@ there is one district that had 12 different polling locations that received pizz
 from PttP."
 
 ggplot(data = mod_df, mapping = aes(count)) +
-        geom_histogram(fill = "red") + 
+        geom_histogram(fill = "red", binwidth = 10) + 
         labs(title = "Number of unique polling locations sampled per congressional district", 
              caption = caption) +
         ylab("district count") +
