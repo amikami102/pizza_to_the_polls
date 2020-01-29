@@ -14,11 +14,11 @@ house_key <- c("MN-01", "CA-10", "CA-25", "CA-39", "CA-45", "CA-48",
                "NY-19", "NY-22", "PA-01", "TX-07", "UT-04", "VA-02",
                "VA-07", "WA-08", "AZ-02", "CA-49", "CO-06", 
                "FL-27", "IA-01", "IL-06", "KS-03", "MI-11", "MN-02",
-               "MN-03", "NJ-11", "NV-03", "NV-04", "PA-07", "VA-10")
+               "MN-03", "NJ-11", "NV-03", "NV-04", "PA-07", "VA-10") %>% sort()
 senate_key <- c("AZ", "FL", "IN", "MO", "MT", "NV", "MN", "NJ", 
-                "WV", "WS", "ND", "TX", "TN", "MS")
+                "WV", "WS", "ND", "TX", "TN", "MS") %>% sort()
 governor_key <- c("AK", "CT", "FL", "GA", "IA", "KA", "ME", 
-                  "MI", "NV", "NM", "OH", "OR", "SD", "WI")
+                  "MI", "NV", "NM", "OH", "OR", "SD", "WI") %>% sort()
 
 # HOUSE RACES
 house_races <- import("data/csv/house_elections_2018_merged.csv", 
@@ -32,6 +32,8 @@ house_races <- import("data/csv/house_elections_2018_merged.csv",
                                ifelse(result_woman1 == "Lost", TRUE, FALSE)),
                woman1 = ifelse(is.na(name_woman1) & is.na(name_woman2), FALSE, woman1),
                woman2 = ifelse(is.na(name_woman2), FALSE, woman2)) %>%
+        mutate(women = factor(woman1 + woman2, 
+                              levels = c(0, 1, 2), exclude = NULL)) %>%
         dplyr::select(-ends_with("_woman1"), -ends_with("_woman2"))
         
 
@@ -48,6 +50,8 @@ senate_races <- import("data/csv/senate_elections_2018_merged.csv",
                                ifelse(result_woman1 == "Lost", TRUE, FALSE)),
                woman1 = ifelse(is.na(name_woman1) & is.na(name_woman2), FALSE, woman1),
                woman2 = ifelse(is.na(name_woman2), FALSE, woman2)) %>%
+        mutate(women = factor(woman1 + woman2,
+                              levels = c(0, 1, 2), exclude = NULL)) %>%
         dplyr::select(-ends_with("_woman1"), -ends_with("_woman2"))
 
 
@@ -61,13 +65,15 @@ governor_races <- import("data/csv/gubernatorial_elections_2018_merged.csv",
                woman2 = ifelse(result_woman == "Lost", TRUE, FALSE),
                woman1 = ifelse(is.na(name_woman), FALSE, woman1),
                woman2 = ifelse(is.na(name_woman), FALSE, woman2)) %>%
+        mutate(women = factor(woman1 + woman2,
+                        levels = c(0, 1, 2), exclude = NULL) ) %>%
         dplyr::select(-ends_with("_woman"))
 
 
 # SAVE DATA
-save(house_races, senate_races, governor_races, 
+save(house_key, senate_key, governor_key,
+     house_races, senate_races, governor_races, 
      file = "data/2018-election-results.Rdata")
-
 
 
 

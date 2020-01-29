@@ -2,7 +2,9 @@
 title: "Web Scraping and GIS | Locating Long Polling Lines with Twitter Data"
 author: "Asako Mikami"
 date: '`r format(Sys.time(), "%B %e, %Y")`'
-output: bookdown::html_document2
+output: 
+    prettydoc::html_pretty:
+        theme: leonids
 ---
 
 ```{r setup, warning = FALSE, message = FALSE, results='hide', echo = FALSE}
@@ -12,7 +14,8 @@ x <- c("tidyverse", "magrittr", "RColorBrewer", "rio", "tmap", "rjson",
        "stargazer", "GGally", "gridExtra")
 lapply(x, library, character.only = TRUE, quietly = TRUE, verbose = FALSE)
 rm(x)
-knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE,
+                      fig.align = "center")
 ```
 
 ```{r load_data}
@@ -62,33 +65,25 @@ I used Twitter API to [search for tweets](https://developer.twitter.com/en/docs/
 ### Searching for tweets 
 
 ```{r}
-knitr::read_chunk("script/count_tweets.R")
+load("data/counts.rds")
 ```
 
-```{r raw_counts}
-```
-
-For tweets, first I made a count query asking how many tweets were posted per hour by PttP from 00:00 of November 6th, 2018 to 02:00 of November 7th, 2018.[^timezone] Inspecting the query response, I saw that there were few pizza deliveries made before 11:00 of November 6th, and since most polls were closed by midnight, I decided to restrict the timeframe from 11:00 and 23:59 of November 6th, 2018. In total, I retrieved `r sum(counts$count) %>% format(big.mark = ",", scientific = FALSE)` raw tweets. The figure below shows the hourly distribution. 
+For tweets, first I made a count query asking how many tweets were posted per hour by PttP from 00:00 of November 6th, 2018 to 02:00 of November 7th, 2018.[^timezone] Inspecting the query response, I saw that there were few pizza deliveries made before 11:00 of November 6th, and since most polls were closed by midnight, I decided to restrict the timeframe from 11:00 and 23:59 of November 6th, 2018. In total, I retrieved `r sum(raw_counts$count) %>% format(big.mark = ",", scientific = FALSE)` raw tweets. The figure below shows the hourly distribution. 
 
 
 [^timezone]: From looking at the API query response, it seems that PttP does not have geolocation enabled on its Twitter account, so it is not possible to tell the time zone. Even if I assume that the account activity is generated in Pacific Standard Time, the timeframe that I selected adequately covers the last polling location that was open before the polls officially closed. 
 
-```{r ggplot_raw_counts, echo = FALSE}
-
+```{r ggplot_raw_counts}
+knitr::include_graphics("./fig/tweets_per_hour.png")
 ```
 
-```{r parsed_counts, echo = FALSE}
-
-```
-
-Since the raw response from the API contains too much information, I scraped the status id that uniquely identifies the tweet (`id`), the time the tweet was created (`created_at`), and the text of the tweet (`text`).
 
 
-Next, using [`CommonRegex` Python module](https://github.com/madisonmay/CommonRegex), I processed the texts to remove any special characters, url's, and @'s, and parsed the cleaned text to detect whether it contained any street address. This reduced the number of relevant tweets to `r sum(parsed$count) %>% format(big.mark = ",", scientific = FALSE)`, which is 5% of the original sample of tweets. The figure below shows the hourly distribution of tweets containing street addresses. 
+Next, I processed the texts to remove any special characters, url's, and @'s, and parsed the cleaned text to detect whether it contained any street address. This reduced the number of relevant tweets to `r sum(parsed_counts$count) %>% format(big.mark = ",", scientific = FALSE)`, which is 5% of the original sample of tweets. The figure below shows the hourly distribution of tweets containing street addresses. 
 
 
 ```{r ggplot_parsed_counts}
-
+knitr::include_graphics("fig/parsed_tweets_per_hour.png")
 ```
 
 
@@ -115,15 +110,20 @@ There is no query method that returns a history of a user's follow-unfollow acti
 
 ## Geocoding addresses with Google's Geocoding API
 
-I used Google's [Geocoding API](https://developers.google.com/maps/documentation/geocoding/start) to parse the addresses and find the geocoordinates of the addresses. From the API response, I scraped the street number (`st_num`), route (`route`), city (`city`), state (`state_abbv`), county (`county`), zipcode (`zipcode`), longitude (`long`), and latitutde (`lat`) (see Table below). 
+I used Google's [Geocoding API](https://developers.google.com/maps/documentation/geocoding/start) to parse the addresses and find the geocoordinates of the addresses. From the API response, I scraped the street number, route, state, county, zipcode, longitude, and latitutde. Table \@ref(tab:all_locs) shows the first few rows of the data set.
 
 ```{r, echo = FALSE}
 load("data/clean_pizza.Rdata")
 ```
 
 
-```{r, echo = FALSE, warning = FALSE}
-all_locs %>% kable(format = "html") %>% 
+```{r all_locs, echo = FALSE, warning = FALSE}
+head <- all_locs %>% 
+    dplyr::select(id, clean_text, lat, lng, 
+                  st_num, route, city, county, zipcode, state_abbv) %>% head() 
+head %>% knitr::kable(format = "html",
+               caption = "Geocoded components of polling addresses and cleaned Tweet text"
+               ) %>% 
         kable_styling() %>% 
         scroll_box(width = "100%", height = "500px")
 ```
@@ -136,83 +136,67 @@ unique_cities <- all_locs %>% group_by(city, state_abbv) %>% summarize(count = n
 ```
 
 
-According to the sampled data, PttP delivered pizzas to `r nrow(unique_locs)` unique addresses, which covers `r nrow(unique_states)` different states and `r nrow(unique_cities)` different cities.[^numbers] 
+ According to the sampled data, PttP delivered pizzas to `r nrow(unique_locs)` unique addresses, which covers `r nrow(unique_states)` different states and `r nrow(unique_cities)` different cities.[^numbers] 
 
 [^numbers]: On their website, PttP [says](https://polls.pizza/about/) that in 2018 they delivered pizzas to "611 polling places across 41 states." The discrepancy between my numbers and theirs may be due to their counting pizzas delivered throughout the year, including those made during special elections that happened earlier in the year. 
 
 
 ## 2018 Midterm election data
 
-I scraped 2018 midterm congressional election results from their Wikipedia pages. For all House, Senate, and gubernatorial races, I scraped the winning candidate's and the second runner's names (`candidate1` and `candidate2`), parties (`party1` and `party2`), and final voteshares in percentages (`share1` and `share2`). I also consulted the Cook Political Report's last available ratings prior to November 6th, 2018 to label whether the race was considered a key for the Democratic Party's takeover of the legislative branch (`key`).[^outlets] Because this election was noted for the number of female candidates on the ballot, I also indicate whether each race involved a woman candidate (`woman`).[^woman] 
+I scraped 2018 Midterm congressional and gubernatorial election results from their Wikipedia pages. For all House, Senate, and gubernatorial races, I scraped the winning candidate's and the second runner's names (`candidate1` and `candidate2`), parties (`party1` and `party2`), and final voteshares in percentages (`share1` and `share2`). 
+
+I also consulted the Cook Political Report's most recent ratings prior to November 6th, 2018 to label whether the race was considered a key for the Democratic Party's takeover of the legislative branch (`key`).[^CPR] If a race was ranked as leaning to either party or a toss-up, I labeled the race as a key race.[^outlets] Lists of key House, Senate, and governors seats are presented below. 
 
 ```{r}
-load(file = "data/2018-election-results.Rdata")
+cat("Key House races: \n", house_key, "\n")
+cat("Key Senate races: \n", senate_key, "\n")
+cat("Key governor races: \n", governor_key, "\n")
 ```
 
-```{r}
-lst <- setNames(by_row(house_races, ~ unlist(.x), .collate = "list")$.out,
-                house_races$district)
-jsonedit(lst, mode = "view")
+Because this election was noted for the number of female candidates on the ballot, I also record whether the top two leading candidates were women (0 if none, 1 if either, and 2 if both).[^women] The following table counts the number of districts that held key races and the number of women nominees from the major parties running for House, Senate, and gubernatorial seats. 
+
+```{r summary_table}
+load("data/2018-election-results.Rdata")
+house_sum <- house_races %>% group_by(key, women) %>%
+        summarize(n = n())
+senate_sum <- senate_races %>% group_by(key, women) %>%
+        summarize(n=n())
+governor_sum <- governor_races %>% group_by(key, women) %>%
+        summarize(n=n())
+rbind(house_sum, senate_sum, governor_sum) %>% 
+        kable(format = "html", 
+              caption = "Summary of districts holding key races and their number of women candidates") %>%
+        kable_styling("striped", full_width = FALSE) %>%
+        pack_rows("House races", 1,6) %>%
+        pack_rows("Senate races", 7, 12) %>%
+        pack_rows("Governor races", 13, 16)
+       
 ```
 
-```{r}
-lst <- setNames(by_row(senate_races, ~ unlist(.x), .collate = "list")$.out,
-                senate_races$state)
-jsonedit(lst, mode = "view")
-```
 
 
-```{r}
-lst <- setNames(by_row(governor_races, ~ unlist(.x), .collate = "list")$.out,
-                governor_races$state)
-jsonedit(lst, mode = "view")
-```
 
 
-[^outlets]: I compiled a list of key House, Senate, and gubernatorial races mentioned by various media outlets and were rated as either toss-up, leaning Republican, or leaning Democratic by the Cook Political Report. "The Washington Post's Senate Race Ratings," *Washington Post*, November 2nd, 2018, [link](https://www.washingtonpost.com/graphics/2018/politics/senate-ratings/); "The Top 10 House Races of 2018," *Washington Post*, March 18, 2018, [link](https://www.washingtonpost.com/news/the-fix/wp/2018/03/18/the-top-10-house-races-of-2018/); "The top races for control of governors' mansions," *Vox*, November 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-governor-races); "The battlefield to control the House of Representatives is huge," *Vox*, Novebmer 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-house-races); "The most contested Senate races," *Vox*, November 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-senate-races); "2018 House Race Ratings," *The Cook Political Report*, October 30, 2018, [link](https://cookpolitical.com/ratings/house-race-ratings/187550); "2018 Governor Race Ratings, *The Cook Political Report*, October 26, 2018, [link](https://cookpolitical.com/ratings/governor-race-ratings/187543); "2018 Senate Race Ratings," *The Cook Political Report*, October 26, 2018, [link](https://cookpolitical.com/ratings/senate-race-ratings/187540).
+[^CPR]: "2018 House Race Ratings," *The Cook Political Report*, October 30, 2018, [link](https://cookpolitical.com/ratings/house-race-ratings/187550); "2018 Governor Race Ratings, *The Cook Political Report*, October 26, 2018, [link](https://cookpolitical.com/ratings/governor-race-ratings/187543); "2018 Senate Race Ratings," *The Cook Political Report*, October 26, 2018, [link](https://cookpolitical.com/ratings/senate-race-ratings/187540).
+
+
+[^outlets]: I compiled a list of key House, Senate, and gubernatorial races mentioned by various media outlets and were rated as either toss-up, leaning Republican, or leaning Democratic by the Cook Political Report. "The Washington Post's Senate Race Ratings," *Washington Post*, November 2nd, 2018, [link](https://www.washingtonpost.com/graphics/2018/politics/senate-ratings/); "The Top 10 House Races of 2018," *Washington Post*, March 18, 2018, [link](https://www.washingtonpost.com/news/the-fix/wp/2018/03/18/the-top-10-house-races-of-2018/); "The top races for control of governors' mansions," *Vox*, November 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-governor-races); "The battlefield to control the House of Representatives is huge," *Vox*, Novebmer 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-house-races); "The most contested Senate races," *Vox*, November 19, 2018, [link](https://www.vox.com/a/midterms-2018/top-senate-races).
 
 [^woman]: "2018 Summary of Women Candidates," Center for American Women and Politics, November 14, 2018, [link](https://cawp.rutgers.edu/potential-candidate-summary-2018).
 
 
-# Interactive map 
+# Interactive map exported as Shiny app
 
-This is an interactive map created with `tmap` package (v2.3.1) in R. There are markers placed on polling locations where pizzas were delivered; the number on the markers counts the number of deliveries made to that location. The map has three layers. The layers color the districts or states that held key races for House, Senate, and governor seats. 
- 
-```{r}
-load(file = "data/map_data.Rdata")
-```
+I created [an interactive map](https://asakomikami.shinyapps.io/pizza_to_the_polls/) with `tmap` package (v2.3.1) in R. There are markers placed on polling locations where pizzas were delivered; the number on the markers counts the number of deliveries made to that location. The map has three layers. The layers color the districts or states that held key races for House, Senate, and governor seats. 
 
-```{r}
-tmap_mode("view")
-tm <- tm_basemap(server = "Wikimedia") +
-        tm_shape(pizzapolls, name = "pizzas delivered") +
-        tm_markers(col = "count") +
-    tm_shape(us_cd, name = "Key House races", unit = "km", bbox = usa_main) +
-    tm_polygons(col = "key", title = "Key House races",
-            palette = "Blues", 
-                popup.vars = c("candidate1", "party1", "share1",
-                               "candidate2", "party2", "share2")
-                ) +
-    tm_shape(us_state, name = "Key Senate races") +
-        tm_polygons(col = "key_sen", 
-                palette = "Oranges", 
-                title= "Key Senate races",
-                popup.vars = c("candidate1_sen", "party1_sen", "share1_sen", "candidate2_sen", "party2_sen", "share2_sen")
-                ) + 
-        tm_shape(us_state, name = "Key governor races") + 
-        tm_polygons(col = "key_gov", 
-                    palette = "Purples", 
-                    title = "Key governor races",
-                    popup.vars = c("candidate1_gov", "party1_gov", "share1_gov", "candidate2_gov", "party2_gov", "share2_gov")
-                ) + 
-	tm_facets(as.layers = TRUE)
-tm
+
+```{r shiny_app, fig.cap = "fig/map_screenshot.png"}
 ```
 
 
 # Analysis
 
-One goal of this project is to learn how PttP, as a nonprofit organization working towards increasing voter turnout by motivating voters to stay in line, can improve its outreach. Therefore, I want to learn the profile of voters who are most likely to know and reach out for pizzas on election day. I also want to know which districts or states had close races but did not have voters contacting PttP; these are places where more voter turnout could have shifted the result and therefore PttP missed opportunities to help out. 
+One goal of this project is to learn how PttP, as a nonprofit organization working towards increasing voter turnout by motivating voters to stay in line, can improve its outreach. Therefore, I want to learn the profile of voters who are most likely to know and reach out for pizzas on election day. I also want to know which districts or states had close races but did not have voters contacting PttP; these are places where higher turnout could have shifted the result and therefore PttP missed opportunities to help out. 
 
 
 
@@ -222,14 +206,14 @@ One goal of this project is to learn how PttP, as a nonprofit organization worki
 
 There is no direct data on the age profile of Twitter users who contacted PttP for pizzas, nor did I conduct any inferential analysis to predict their ages or politicical identifications based on the available data. Still, the fact that PttP relies on social media platforms such as Instagram, Facebook, and Twitter to collect reports of long polling lines suggests that young people, who are active on these social media platforms, would be the first to know. More importantly, accounts of media figures and activists that are connected with PttP would serve as a mouthpiece for the organization. Thus, the goal of this section is to learn about 
 
-I created a corpus of profile descriptions of PttP's friends and performed Bag of Words on it using `sklearn.feature_extraction.text.CountVectorizer`. The top 50 most frequent terms along with its frequencies are shown below.[^top50] The frequencies of media terminology shows that the most common types of accounts are those of journalists, editors, show hosts, and political pundits.
+I created a corpus of profile descriptions of PttP's friends and performed Bag of Words on it using `sklearn.feature_extraction.text.CountVectorizer`. The top 25 most frequent terms along with its frequencies are shown below.[^top50] The frequencies of media terminology shows that the most common types of accounts are those of journalists, editors, show hosts, and political pundits.
 
 [^top50]: I am excluding English stop words (e.g. "and") and custom stop words that appear very frequently in Twitter profiles ('twitter', 'email', 'https', 'com', 'politics', 'gmail', 'account', 'tweets', 'views', 'american', 'state', 'opinions'). 
 
 ```{r}
 file <- file("data/friends/top_50terms.txt", open = "r")
 top50 <- readLines(file)
-for (i in 1:length(top50)){
+for (i in 1:25){
         print(top50[i])
 }
 close(file)
@@ -262,7 +246,7 @@ lst <- setNames(by_row(friends_key, ~ unlist(.x), .collate = "list")$.out,
 jsonedit(lst, mode = "view")
 ```
 
-What stands out is that it includes March For Our Lives and their founders, namely Jacyln Corin, Cam Kasky, and David Hogg. Gun control and women's reproductive rights are the two most divisive issues in U.S. politics. The fact that anti-gun control and anti-abortion advocacy groups do not appear in the result provides strong evidence that PttP is aligned with politically liberal and progressive agenda. By social network theory, I argue that the same can be said for voters who contacted PttP on the Election day.
+What stands out is that it includes March For Our Lives and their founders, namely Jacyln Corin, Cam Kasky, and David Hogg. Gun control and women's reproductive rights are the two most divisive issues in U.S. politics. The fact that anti-gun control and anti-abortion advocacy groups do not appear in the result provides strong evidence that PttP is aligned with politically liberal and progressive agenda. By social network theory, I argue that the same can be said for voters who contacted PttP on the Election day. 
 
 
 ### Regression models
@@ -278,52 +262,12 @@ The following sequence of pairwise plot panels give some intuition for which pre
 #### Pairwise plots
 
 ```{r}
-load("data/acs_cd.Rdata")
-```
-
-```{r create_mod_df}
-us_cd %<>% as.data.frame() %>% dplyr::select(-geometry)
-pizzapolls %<>% as.data.frame() 
-us_state %<>% as.data.frame() %>% dplyr::select(-geometry)
-mod_df <- pizzapolls %>% left_join(us_state, by = c("state" = "STUSPS")) %>%
-    rename(key_rep = key,
-           woman1_rep = woman1, woman2_rep = woman2) %>%
-    left_join(median_houseinc, by = "GEOID") %>%
-    left_join(highschEd_laborforce, by = "GEOID") %>%
-    left_join(black_pop, by = "GEOID") %>%
-    left_join(collegeEd_laborforce, by = "GEOID") %>%
-    left_join(total_pop, by = "GEOID") %>%
-    mutate(medianHouseInc_log = log(medianHouseInc_estimate),
-           highschEdInLaborForce_log = log(highschEdInLaborForce_estimate),
-           collegeEdInLaborForce_log = log(collegeEdInLaborForce_estimate),
-           blackPopShare_log = log(blackPop_estimate/totalPop_estimate),
-           totalPop_log = log(totalPop_estimate)) %>%
-    dplyr::select(-contains("_moe"), -contains("_estimate")) %>%
-    mutate(zero = ifelse(count == 0, TRUE, FALSE),
-           women_rep = factor(woman1_rep + woman2_rep, 
-                              levels = c(0, 1, 2)),
-           women_sen = factor(woman1_sen + woman2_sen,
-                              levels = c(0, 1, 2)),
-           women_gov = factor(woman1_gov + woman2_gov,
-                              levels = c(0, 1, 2)),
-           count_log = log(count + 0.1)
-    )
+load("data/mod_df.Rdata")
 color <- brewer.pal(3, "Set2")
 ```
 
-```{r ggpair_num, fig. "Pairwise plots of numerical variables"}
-mod_df %>% dplyr::select(count,
-                          medianHouseInc_log, 
-                          blackPopShare_log
-                         ) %>%
-    ggpairs(
-        upper = list(continuous = "cor"),
-        lower = list(continuous = wrap(ggally_smooth, color = color[1])),
-        columnLabels = c("count", "log median house income", 
-                         "log % black pop."),
-        title = "Pairwise plots of numerical variables",
-        axisLabels = "none"
-        ) + theme_minimal(base_size = 10) 
+```{r ggpair_num}
+knitr::include_graphics("./fig/ggpairs_num.png")
 ```
 
 
@@ -331,61 +275,17 @@ In the second panel, the first row shows box plots of logged count values agains
 
 Next, the second row displays boxplots of the logged count values against the number of women candidates on the ballot for House, Senate, and governor races in the district. There were no governor races where both candidates from the major parties were women. For each race, there can be either 0, 1, or 2 leading women candidates on the ballot where the value `2` means that both the Democratic and Republican candidates were women. Again, due to so many zero counts, the box plots are not very informative. 
 
-```{r ggpair_cat}
-house1 <- ggplot(data = mod_df, aes(x = key_rep, y = count_log)) + 
-    geom_boxplot(fill = color[1], na.rm = TRUE) + 
-    xlab("Key House race") +
-    ylab("Logged count") + 
-    theme_minimal()
-senate1 <- ggplot(data = mod_df, aes(x= key_sen, y = count_log)) +
-    geom_boxplot(fill = color[2], na.rm = TRUE) +
-    xlab("Key Senate race") + ylab("Logged count") + 
-    theme_minimal()
-governor1 <- ggplot(data = mod_df, aes(x= key_gov, y = count_log)) +
-    geom_boxplot(fill = color[3], na.rm = TRUE) +
-    xlab("Key governor race") + ylab("Logged count") + 
-    theme_minimal()
-house2 <- ggplot(data = mod_df, aes(x = women_rep, y = count_log)) + 
-    geom_boxplot(fill = color[1]) + 
-    xlab("Women candidates for House") + ylab("Logged count") + 
-    theme_minimal(base_size = 10)
-senate2 <- ggplot(data = mod_df, aes(x= women_sen, y = count_log)) +
-    geom_boxplot(fill = color[2]) +
-    xlab("Women candidates for Senate") + ylab("Logged count") + 
-    theme_minimal(base_size = 10)
-governor2 <- ggplot(data = mod_df, aes(x= women_gov, y = count_log)) +
-    geom_boxplot(fill = color[3]) +
-    xlab("Women candidates for governor") + ylab("Logged count") + 
-    theme_minimal(base_size = 10)
-
-grid.arrange(house1, senate1, governor1, 
-             house2, senate2, governor2,
-             nrow = 2)
+```{r ggpairs_cat}
+knitr::include_graphics("./fig/ggpairs_cat.png")
 ```
-
-
-
-
 
 
 
 The histogram below shows that a vast majority of congressional districts (approximately 80 percent) did not have pizza deliveries from PttP at one of their polling locations. This suggests that reporting a long line to PttP on the Election day was itself a rare event. Since our count data has excess zeroes, the best fitting model would incorporate the assumption that the data generating process behind the count values to be different from that behind the zeroes. 
 
 
-```{r}
-df <- us_cd %>% group_by(label) %>% summarize(n = sum(count > 0))
-
-caption <- "The histogram shows the distribution of number of unique polling locations identified by PttP tweets per district. For example, about 80 percent of\n districts did not have any polling location identified, meaning that there were no PttP pizza deliveries observed for these 350+ districts.\n On the other extreme end, there is one district that had 12 different polling locations that received pizzas from PttP."
-
-ggplot(data = df, mapping = aes(n)) +
-    geom_histogram(fill = "red") + 
-    labs(title = "Number of unique polling locations mentioned in the data per congressional district", 
-            caption = caption) +
-    ylab("district count") +
-    xlab("# of polling locations identified") +
-    theme_minimal(base_size = 10)
-    
-
+```{r hist_cd, results="asis"}
+knitr::include_graphics("fig/hist_cd.png")
 ```
 
 
@@ -403,8 +303,8 @@ For base model, I will be running a Poisson model. Poisson regression is often u
 ```{r, results = "asis"}
 mod_base <- glm(count ~ key_rep + key_sen + key_gov + 
                women_rep + women_sen + women_gov +  
-               medianHouseInc_log + 
-               blackPopShare_log,
+               medianHouseInc_log + totalPop_log +
+               blackPop_log + age18to24_log,
            data = mod_df, family = poisson) 
 summary(mod_base)
 ```
@@ -415,18 +315,25 @@ are positive. Having both leading candidates women (`women_sen2`) and a women ca
 - The coefficient of `blackPopShare_log` is statistically significant in the positive direction. However, the scatterplot in \@ref(fig:ggpair_num)) suggests that this may due to influential points.
 
 
-Figure \@ref(fig:base_diagnostic)) shows leave-one-out sigma and Cook's distance for each explanatory variable. In all of these diagnostic plots, there seems to be three or four outliers that are influencing the base model's fit. 
+```{r}
+sigma <- influence(mod_base)$sigma
+sigma_points <- sigma[sigma < 2.26] %>% names() %>% as.numeric()
+cooksd <- cooks.distance(mod_base)
+cooksd_points <- cooksd[cooksd > 0.5] %>% names() %>% as.numeric()
+outlier_points <- union(sigma_points, cooksd_points)
+outliers <- all$label[outlier_points]
+```
+
+Figure \@ref(fig:base_diagnostic)) shows residuals (`resid`), leave-one-out sigma ($\sigma_{[-i]}$) and Cook's distance ($D_i$) for each explanatory variable. In all of these diagnostic plots, there seems to be three or four outliers that have significant influence on the model's fit. The outlier observations with $\sigma_{[-i]}$ less than 2.26 or $D_i$ greater than 0.5 are districts `r outliers`. 
+
 
 ```{r base_diagnostic, results = "asis", warning=FALSE, message = FALSE}
-ggnostic(mod_base, columnsY = c(".sigma", ".cooksd")) 
+ggnostic(mod_base, columnsY = c(".resid", ".sigma", ".cooksd")) 
 ```
 
 ```{r}
-infl <- influence(mod_base)
-sigma.outliers <- infl$sigma[infl$sigma < 1.880] %>% names() %>% as.numeric()
-sigma.outlier_districts <- us_cd[sigma.outliers, ]$label
 df <- mod_df %>% 
-    filter(label %in% sigma.outlier_districts) %>%
+    filter(label %in% outliers) %>%
     dplyr::select(key_rep, candidate1, candidate2, party1, party2, share1, share2, women_rep,
            key_sen, candidate1_sen, candidate2_sen, party1_sen, party2_sen, share1_sen, share2_sen, women_sen,
            key_gov, candidate1_gov, candidate2_gov, party1_gov, party2_gov, share1_gov, share2_gov, women_gov, label)
@@ -438,20 +345,27 @@ jsonedit(lst, mode = "view")
 
 
 
+
 #### Zero-inflated Poisson regression model
 
-
-
+Since the base model does not accou t for the excess zeros in the sample, a better performing model should take into account that districts that have at least one outcome count may be qualitatively different from those that did not have zero count. The model I choose is zero-inflated Poisson, aka mixed Poisson regression. This model assumes that 
+    $$\rm{E}[\text{count}_i = k] = P(\text{count}_i = 0) * 0 + P(\text{count}_i > 0) * \rm{E}[\text{count}_i = k \, | \, \text{count}_i > 0],$$
+i.e. the count data is model conditional on the logit model predicting $P(\text{count}_i = 0)$. I will use the same set of predictors as the base model regression equation. 
 
 ```{r, results = "asis"}
 library(pscl)
-mod_inflated <- zeroinfl(count ~ key_sen + key_gov + key_rep + 
-               women_sen + women_gov + women_rep + 
-               medianHouseInc_log + 
-               blackPopPercent_log,
+mod_inflated <- zeroinfl(count ~ key_rep + key_sen + key_gov + 
+               women_rep + women_sen + women_gov +  
+               medianHouseInc_log + totalPop_log +
+               blackPop_log + age18to24_log,
                data = mod_df)
 summary(mod_inflated)
 ```
+
+The result for the count outcome is very similar to the base model result. In both models, the number of leading women candidates in the Senate and governor races is significantly associated with higher count values. Unlike the base model though, the share of blacks in the population (`blackPop_log`) is not significant when predicting count values. Even when it comes to the logistic compoenent of the model, `blackPopShare_log` has negative coefficient. 
+
+
+
 
 
 I will compare the base Poisson model against the zero-inflated Poisson model using Vuong's non-nested test. The result printed below shows that the zero-inflated Poisson model (`model2`) is significantly different from and superior to the base model (`model1`). 
@@ -462,21 +376,9 @@ vuong(mod_base, mod_inflated)
 ```
 
 
-
-
-
-
-
-
-## Missed opportunities: Hypothesis tests
-
-
-
-
-
-
 # Lessons for the 2020 election
 
+The anticipation of the 2018 election was that the Democrats would take at least the House majority while the forecast for the Democrats taking the Senate was unpropitious. The outliers in the previous 
 
 
 # What I learned from this project

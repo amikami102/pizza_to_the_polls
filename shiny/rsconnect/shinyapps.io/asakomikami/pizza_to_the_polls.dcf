@@ -5,8 +5,8 @@ account: asakomikami
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 843025
-bundleId: 1990563
+bundleId: 2760440
 url: https://asakomikami.shinyapps.io/pizza_to_the_polls/
-when: 1554517559.73931
+when: 1580287127.43448
 asMultiple: FALSE
 asStatic: FALSE

@@ -1,8 +1,8 @@
 ## ui.R
 library(leaflet)
 
-shinyUI(navbarPage("2018 midterm polling locations",
-        tabPanel("pizzas delivered",
+shinyUI(navbarPage("Locating Long Polling Lines with Twitter Data",
+        absolutePanel(
                 div(class="outer",
                 tags$head(
                     includeCSS("styles.css")# Include our custom CSS
@@ -11,7 +11,7 @@ shinyUI(navbarPage("2018 midterm polling locations",
                 tags$div(id="cite",
                          'Data collected by Asako Mikami (2019)', 
                          a(icon(name = "github", lib = "font-awesome"),
-                           href = "https://amikami102.github.io")
+                           href = "https://github.com/amikami102/pizza_to_the_polls")
                 )
         )
 )))

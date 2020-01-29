@@ -46,13 +46,16 @@ median_houseinc <- get_cd_data(var = "B19013_001", varname = "medianHouseInc")
 total_pop <- get_cd_data(var = "B01003_001", varname = "totalPop")
 black_pop <- get_cd_data(var = "C02003_004", varname = "blackPop")
 hisp_pop <- get_cd_data(var = "B03001_001", varname = "hispPop")
-collegeEd_laborforce <- get_cd_data(var = "B16010_029", varname = "collegeEdInLaborForce")
-highschEd_laborforce <- get_cd_data(var = "B16010_016", varname = "highschEdInLaborForce")
-
+age18to19_male <- get_cd_data(var = "B01001_007", varname = "age18to19_male")
+age18to19_female <- get_cd_data(var = "B01001A_022", varname = "age18to19_female")
+age20to24_male <- get_cd_data(var = "B01001A_008", varname = "age20to24_male")
+age20to24_female <- get_cd_data(var = "B01001A_023", varname = "age20to24_female")
 
 # save data
-save(median_houseinc, total_pop, black_pop, hisp_pop, collegeEd_laborforce,
-     highschEd_laborforce, file = "data/acs_cd.Rdata")
+save(median_houseinc, total_pop, black_pop, hisp_pop, 
+     age18to19_male, age18to19_female,
+     age20to24_male, age20to24_female,
+     file = "data/acs_cd.Rdata")
 
 
 

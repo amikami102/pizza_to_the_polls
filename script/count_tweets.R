@@ -10,12 +10,13 @@ library(rio)
 library(rjson)
 library(lubridate)
 library(RColorBrewer)
+select <- dplyr::select
 
 # number of tweets retrieved from Twitter API search request
 ## @knitr raw_counts
 
-counts <- fromJSON(file = "data/counts.json")$results
-counts %<>% map_df(~map_at(., "timePeriod", ymd_hm, tz = "UTC")) %>%
+raw_counts <- fromJSON(file = "data/counts.json")$results
+raw_counts %<>% map_df(~map_at(., "timePeriod", ymd_hm, tz = "UTC")) %>%
         filter(timePeriod >= as_datetime("2018-11-06 11:00:00"))
 
 
@@ -23,11 +24,11 @@ counts %<>% map_df(~map_at(., "timePeriod", ymd_hm, tz = "UTC")) %>%
 cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                "#0072B2", "#D55E00", "#CC79A7")
 
-ggplot(data = counts, mapping = aes(x = timePeriod, y = count)) + 
+ggplot(data = raw_counts, mapping = aes(x = timePeriod, y = count)) + 
         geom_bar(stat = "identity", fill = cbPalette[2]) +
         labs(title = "Tweets per hour", x = "Hour", y = "Count") +
         theme_minimal() 
-
+ggsave("fig/tweets_per_hour.png")
 
 ## @knitr parsed_counts
 convert_to_tibble <- function(file) {
@@ -44,7 +45,7 @@ convert_to_tibble <- function(file) {
 }
 
 parsed <- list.files("data/tweets/script02", pattern = "parsed", full.names = TRUE) %>% 
-        map_df(~convert_to_tibble(.)) %>%
+        map_df(~convert_to_tibble(.x)) %>%
         mutate(created_at = paste("2018-11-06", 
                                   str_extract(created_at, 
                                               "[0-9]{2}:[0-9]{2}:[0-9]{2}")) %>%
@@ -54,32 +55,18 @@ parsed <- list.files("data/tweets/script02", pattern = "parsed", full.names = TR
         group_by(created_at) %>%
         summarize(count = n())
 
-counts %<>% left_join(parsed, by = c("timePeriod" = "created_at"),
+parsed_counts <- raw_counts %>% 
+        left_join(parsed, by = c("timePeriod" = "created_at"),
                       suffix = c("_raw", "_parsed")) %>%
         mutate_if(is.numeric, ~replace(., is.na(.), 0))
 
 ## @knitr ggplot_parsed_counts
-
 ggplot(data = counts, mapping = aes(x = timePeriod, y = count_parsed)) +
         geom_bar(stat = "identity", fill = cbPalette[3]) + 
         labs(title = "Tweets per hour containing street address",
              x = "Hour", y = "Count") + 
         theme_minimal()
-
-## @knitr cleaned_counts
-cleaned <- list.files("data/cleaned", full.names = TRUE) %>% 
-        map_df(~convert_to_tibble(.)) %>%
-        mutate(created_at = paste("2018-11-06", 
-                                  str_extract(created_at, 
-                                              "[0-9]{2}:[0-9]{2}:[0-9]{2}")) %>%
-                       ymd_hms() %>% floor_date(unit = "hour")
-        ) %>%
-        filter(contain_address) %>%
-        group_by(created_at) %>%
-        summarize(count = n())
-
-counts %<>% left_join(cleaned, by = c("timePeriod" = "created_at")) %>%
-        mutate_if(is.numeric, ~replace(., is.na(.), 0))
+ggsave("fig/parsed_tweets_per_hour.png")
 
 
-
+save(raw_counts, parsed_counts, file = "data/counts.rda")
