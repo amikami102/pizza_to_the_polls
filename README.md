@@ -2,6 +2,7 @@
 Locate long polling lines based on tweets posted by Pizza to the Polls, a nonprofit org that delivers pizzas to voters waiting in line, on 2018 Midterm Election day. Investigate the profile of voters who knew about and reported long lines to Pizza to the Polls. Identify missed opportunities and recommend how PttP can increase its outreach for the upcoming 2020 Election. 
 
 Full report available at RPubs: https://rpubs.com/afmikami/pizza_to_the_polls.
+
 Shiny app of interactive map: https://asakomikami.shinyapps.io/pizza_to_the_polls/.
 
 # What to expect in this project:
