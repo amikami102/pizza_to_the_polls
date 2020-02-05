@@ -25,15 +25,13 @@ house_races <- import("data/csv/house_elections_2018_merged.csv",
                       header = TRUE, na = c("", "NA", "Write-ins")) %>%
         dplyr::select(-V1, -state) %>%
         mutate(key = ifelse(district %in% house_key, TRUE, FALSE),
-               woman1 = ifelse((!is.na(name_woman1) & result_woman1 == "WON") | 
-                                (!is.na(name_woman2) & result_woman2 == "WON"), 
-                               TRUE, FALSE),
-               woman2 = ifelse(!is.na(result_woman2), TRUE,
-                               ifelse(result_woman1 == "Lost", TRUE, FALSE)),
-               woman1 = ifelse(is.na(name_woman1) & is.na(name_woman2), FALSE, woman1),
-               woman2 = ifelse(is.na(name_woman2), FALSE, woman2)) %>%
-        mutate(women = factor(woman1 + woman2, 
-                              levels = c(0, 1, 2), exclude = NULL)) %>%
+               name_woman1 = na_if(name_woman1, ""),
+               name_woman2 = na_if(name_woman2, ""),
+               woman1 = ifelse(!is.na(name_woman1), TRUE, FALSE),
+               woman2 = ifelse(!is.na(name_woman2), TRUE, FALSE),
+               women = factor(woman1 + woman2,
+                              levels = c(0, 1, 2), exclude = NULL)
+               ) %>%
         dplyr::select(-ends_with("_woman1"), -ends_with("_woman2"))
         
 
@@ -43,15 +41,20 @@ senate_races <- import("data/csv/senate_elections_2018_merged.csv",
         dplyr::select(-V1) %>%
         rename(share1 = percentage1, share2 = percentage2) %>%
         mutate(key = ifelse(state %in% senate_key, TRUE, FALSE),
-               woman1 = ifelse((!is.na(name_woman1) & result_woman1 == "WON") | 
-                                       (!is.na(name_woman2) & result_woman2 == "WON"), 
-                               TRUE, FALSE),
-               woman2 = ifelse(!is.na(result_woman2), TRUE,
-                               ifelse(result_woman1 == "Lost", TRUE, FALSE)),
-               woman1 = ifelse(is.na(name_woman1) & is.na(name_woman2), FALSE, woman1),
-               woman2 = ifelse(is.na(name_woman2), FALSE, woman2)) %>%
-        mutate(women = factor(woman1 + woman2,
-                              levels = c(0, 1, 2), exclude = NULL)) %>%
+               name_woman1 = na_if(name_woman1, ""),
+               name_woman2 = na_if(name_woman2, ""),
+               # woman1 = ifelse((!is.na(name_woman1) & result_woman1 == "WON") | 
+               #                         (!is.na(name_woman2) & result_woman2 == "WON"), 
+               #                 TRUE, FALSE),
+               # woman2 = ifelse(!is.na(result_woman2), TRUE,
+               #                 ifelse(result_woman1 == "Lost", TRUE, FALSE)),
+               # woman1 = ifelse(is.na(name_woman1) & is.na(name_woman2), FALSE, woman1),
+               # woman2 = ifelse(is.na(name_woman2), FALSE, woman2)
+               woman1 = ifelse(!is.na(name_woman1), TRUE, FALSE),
+               woman2 = ifelse(!is.na(name_woman2), TRUE, FALSE),
+               women = factor(woman1 + woman2,
+                              levels = c(0, 1, 2), exclude = NULL)
+               ) %>%
         dplyr::select(-ends_with("_woman1"), -ends_with("_woman2"))
 
 
@@ -61,12 +64,10 @@ governor_races <- import("data/csv/gubernatorial_elections_2018_merged.csv",
         dplyr::select(-V1) %>%
         rename(share1 = percentage1, share2 = percentage2) %>%
         mutate(key = ifelse(state %in% governor_key, TRUE, FALSE),
-               woman1 = ifelse(result_woman == "WON", TRUE, FALSE),
-               woman2 = ifelse(result_woman == "Lost", TRUE, FALSE),
-               woman1 = ifelse(is.na(name_woman), FALSE, woman1),
-               woman2 = ifelse(is.na(name_woman), FALSE, woman2)) %>%
-        mutate(women = factor(woman1 + woman2,
-                        levels = c(0, 1, 2), exclude = NULL) ) %>%
+               woman1 = ifelse(!is.na(name_woman), TRUE, FALSE),
+               woman2 = FALSE, 
+               women = factor(woman1, levels = c(0, 1, 2), exclude = NULL)
+               ) %>%
         dplyr::select(-ends_with("_woman"))
 
 

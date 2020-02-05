@@ -1,5 +1,4 @@
 # ignore all credential files
-script/credentials/
 .env
 
 
@@ -44,4 +43,5 @@ __pycache__
 .ipynb_checkpoints
 .Rproj.user
 .Rproj
+rsconnect/
 .pyc

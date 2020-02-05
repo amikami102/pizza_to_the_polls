@@ -42,7 +42,8 @@ coord <- duplicates %>%
   as.data.frame() %>% cbind(route = duplicates)
 
 for (r in duplicates){
-  unique_locs[unique_locs$route == r, c("lng", "lat")] <- coord[coord$route == r, c("lng", "lat")]
+  unique_locs[unique_locs$route == r, c("lng", "lat")] <- 
+    coord[coord$route == r, c("lng", "lat")]
 }
 
 # group by addresses again and aggregate the count values 

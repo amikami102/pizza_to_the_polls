@@ -4,71 +4,68 @@
 ####----------------------------
 library(tidyverse)
 library(GGally)
+library(RColorBrewer)
+library(gridExtra)
 load("data/mod_df.Rdata")
+count_df <- mod_df[mod_df$count > 0, ]
+color <- brewer.pal(n = 8, name = "Set1")
 
 ## ggpairs_num
 mod_df %>% dplyr::select(count, totalPop_log,
                          medianHouseInc_log, 
-                         blackPop_log, 
-                         age18to24_log) %>%
+                         blackPopShare_log, 
+                         age18to24Share_log) %>%
         ggpairs(
                 upper = list(continuous = "cor"),
-                lower = list(continuous = wrap(ggally_smooth, color = color[1])),
+                lower = list(continuous = wrap(ggally_smooth, color = color[8])),
                 columnLabels = c("count", 
                                  "log total pop.",
-                                 "log median house income", 
+                                 "log median house inc.", 
                                  "log Black pop.", 
-                                 "log ages 18-24 pop."),
+                                 "log ages 18-24"),
                 title = "Pairwise plots of numerical variables",
                 axisLabels = "none"
         ) + theme_minimal(base_size = 10) 
 ggsave("fig/ggpairs_num.png")
 
 # ggpairs_cat
-house1 <- ggplot(data = mod_df, aes(x = key_rep, y = count)) + 
+house1 <- ggplot(data = count_df, aes(x = key_rep, y = count_log)) + 
         geom_boxplot(fill = color[1], na.rm = TRUE) + 
         xlab("Key House race") +
-        ylab("Logged count") + 
+        ylab("") + 
         theme_minimal()
-senate1 <- ggplot(data = mod_df, aes(x= key_sen, y = count)) +
+senate1 <- ggplot(data = count_df, aes(x= key_sen, y = count_log)) +
         geom_boxplot(fill = color[2], na.rm = TRUE) +
-        xlab("Key Senate race") + ylab("Logged count") + 
+        xlab("Key Senate race") + ylab("") + 
         theme_minimal()
-governor1 <- ggplot(data = mod_df, aes(x= key_gov, y = count)) +
+governor1 <- ggplot(data = count_df, aes(x= key_gov, y = count_log)) +
         geom_boxplot(fill = color[3], na.rm = TRUE) +
-        xlab("Key governor race") + ylab("Logged count") + 
+        xlab("Key governor race") + ylab("") + 
         theme_minimal()
-house2 <- ggplot(data = mod_df, aes(x = women_rep, y = count)) + 
+house2 <- ggplot(data = count_df, aes(x = women_rep, y = count_log)) + 
         geom_boxplot(fill = color[1]) + 
-        xlab("Women candidates for House") + ylab("Logged count") + 
+        xlab("Women candidates for House")  + ylab("") + 
         theme_minimal(base_size = 10)
-senate2 <- ggplot(data = mod_df, aes(x= women_sen, y = count)) +
+senate2 <- ggplot(data = count_df, aes(x= women_sen, y = count_log)) +
         geom_boxplot(fill = color[2]) +
-        xlab("Women candidates for Senate") + ylab("Logged count") + 
+        xlab("Women candidates for Senate") + ylab("") + 
         theme_minimal(base_size = 10)
-governor2 <- ggplot(data = mod_df, aes(x= women_gov, y = count)) +
+governor2 <- ggplot(data = count_df, aes(x= women_gov, y = count_log)) +
         geom_boxplot(fill = color[3]) +
-        xlab("Women candidates for governor") + ylab("Logged count") + 
+        xlab("Women candidates for governor")  + ylab("") + 
         theme_minimal(base_size = 10)
 
 grid.arrange(house1, senate1, governor1, 
              house2, senate2, governor2,
-             nrow = 2)
-ggsave("fig/ggpairs_cat.png")
+             nrow = 2, left = "Logged count")
+ggsave("fig/ggpairs_cat_nozeros.png")
 
 
 # hist_cd
-caption <- "The histogram shows the distribution of number of unique polling 
-locations identified by PttP tweets per district. For example, about 80 percent of\n 
-districts did not have any polling location identified, meaning that there were no 
-PttP pizza deliveries observed for these 350+ districts.\n On the other extreme end, 
-there is one district that had 12 different polling locations that received pizzas 
-from PttP."
-
 ggplot(data = mod_df, mapping = aes(count)) +
-        geom_histogram(fill = "red", binwidth = 10) + 
-        labs(title = "Number of unique polling locations sampled per congressional district", 
-             caption = caption) +
+        geom_histogram(fill = color[2], binwidth = 10) + 
+        labs(title = "Number of unique polling locations sampled per congressional district" 
+             )+
         ylab("district count") +
         xlab("# of polling locations identified") +
         theme_minimal(base_size = 10)

@@ -12,6 +12,8 @@ library(lubridate)
 library(RColorBrewer)
 select <- dplyr::select
 
+
+
 # number of tweets retrieved from Twitter API search request
 ## @knitr raw_counts
 
@@ -25,7 +27,7 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
                "#0072B2", "#D55E00", "#CC79A7")
 
 ggplot(data = raw_counts, mapping = aes(x = timePeriod, y = count)) + 
-        geom_bar(stat = "identity", fill = cbPalette[2]) +
+        geom_bar(stat = "identity", fill = cbPalette[4]) +
         labs(title = "Tweets per hour", x = "Hour", y = "Count") +
         theme_minimal() 
 ggsave("fig/tweets_per_hour.png")
@@ -62,7 +64,7 @@ parsed_counts <- raw_counts %>%
 
 ## @knitr ggplot_parsed_counts
 ggplot(data = counts, mapping = aes(x = timePeriod, y = count_parsed)) +
-        geom_bar(stat = "identity", fill = cbPalette[3]) + 
+        geom_bar(stat = "identity", fill = cbPalette[4]) + 
         labs(title = "Tweets per hour containing street address",
              x = "Hour", y = "Count") + 
         theme_minimal()
