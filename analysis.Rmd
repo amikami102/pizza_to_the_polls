@@ -1,5 +1,5 @@
 ---
-title: "Web Scraping, GIS data, Bag of Words, and Regression | Locating Long Polling Lines with Twitter Data"
+title: "Locating Long Polling Lines with Twitter Data 🍕🗳🇺🇸️"
 author: "Asako Mikami"
 date: '`r format(Sys.time(), "%B %e, %Y")`'
 output: 
@@ -35,7 +35,7 @@ load("data/missed_opp.Rdata")
 
 
 
-# Introduction
+# Introduction 🗳️
 
 The inspiration for this project came during the 2018 midterm election when I came across a Twitter account called [`@PizzaToThePolls`](https://twitter.com/PizzaToThePolls). On the election Day, Pizza to the Polls was tweeting about delivering pizzas to polling locations across the United States ([sample tweet](https://twitter.com/PizzaToThePolls/status/106003539396866048) below). 
 
@@ -54,7 +54,7 @@ The goal of this project is to collect the polling locations where Pizza to the 
 
 # Data 
 
-## About Pizza To the Polls
+## About Pizza To the Polls 
 
 <img src="fig/PizzaToThePolls_logo.png" alt="logo" width="200"/>
 
@@ -165,14 +165,12 @@ cat("Key governor races: \n", governor_key, "\n")
 Because 2018 was noted for the number of female candidates on the ballot, I also record the number of women candidates who proceeded to the general election for each race.
 
 ```{r summary_table}
-library(data.tree)
+
 load("data/2018-election-results.Rdata")
-house_sum <- house_races %>% group_by(key, women) %>%
-        summarize(n = n())
-senate_sum <- senate_races %>% group_by(key, women) %>%
-        summarize(n=n())
-governor_sum <- governor_races %>% group_by(key, women) %>%
-        summarize(n=n())
+
+house_sum <- xtabs(~ key + women, data = house_races)
+senate_sum <- xtabs(~ key + women, data = senate_races)
+governor_sum <- xtabs(~ key + women, data = governor_races)
 house_sum %>% kable(format = "html", caption = "House races, unit = districts")
 senate_sum %>% kable(format = "html", caption = "Senate races, unit = states")
 governor_sum %>% kable(format = "html", caption = "Governor races, unit = states")
@@ -376,12 +374,10 @@ Propensity score is the probability of having `zero == TRUE`. Naturally, the mas
 idea of the values of the numeric variables, I have binned these variables into deciles (`medianHouseInc_q`, `totalPop_q`, `blackPopShare_q`, `age18to24_q`). 
 
 ```{r}
-missed_opp %>% kable```{r}
-missed_opp %>% kable() %>% kable_styling() %>%
-    scroll_box(width = "100%", height = "200px")
+missed_opp %>% rmarkdown::paged_table()
 ```
-d
- in the table above held any key House race, continuing the trend we've seen in the main result. However, these districts usually had woman candidate running from the Democratic party including LA-03, LA-06, NC-07, and NC-12, where the GOP incumbents won at comfortable margin. The fact that these districts appear in the table suggests to me that these are districts that were overlooked but nonetheless would have welcomed the help of nonprofits like Pizza to the Polls. 
+
+None of the district detectedace, continuing the trend we've seen in the main result. However, these districts usually had woman candidate running from the Democratic party including LA-03, LA-06, NC-07, and NC-12, where the GOP incumbents won at comfortable margin. The fact that these districts appear in the table suggests to me that these are districts that were overlooked but nonetheless would have welcomed the help of nonprofits like Pizza to the Polls. 
 
 # Lessons for the 2020 election
 
@@ -398,6 +394,6 @@ Majority of my time was spent on **cleaning and augmenting the data** by scrapin
 
 This project made a heavy use of API's: Twitter API, Google's Geocoding API, and US Census API. I tried three ways of **storing credentials**: saving keys in credential files, saving keys in the system environment, and [saving keys in a .env file](http://jonathansoma.com/lede/foundations-2019/classes/apis/keeping-api-keys-secret/). I ended up sticking to the third method for two reasons. First, `dotenv` package is available both for Python and R. Second, since I had to regenerate the API keys more than once during this project, I liked having a file that I could easily edit instead of opening the system environment through the terminal. Additionally, I finally learned the utility of .gitignore. 
 
-Finally, this project has motivated me to learn more data visualization techniques. I am not quite happy with many of the visualizations I produced in this project including the interactive map, which takes too much time to load. Even for the simpler plots, I would like to learn d3.js to incorporate [William Chase's visualiation tips](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0) such as using colored text in plot titles [instead of legends](https://twitter.com/djnavarro/status/1222952500237520897?s=20). I think I can do more cool visualizations using `ggfacet`.[^inspiration]
+Finally, this project has motivated me to learn more data visualization techniques. I **am not quite happy**ualizations I produced in this project including the interactive map, which takes too much time to load. Even for the simpler plots, I would like to learn d3.js to incorporate [William Chase's visualiation tips](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0) such as using colored text in plot titles [instead of legends](https://twitter.com/djnavarro/status/1222952500237520897?s=20). I think I can do more cool visualizations using `ggfacet`.[^inspiration]
 
 [^inspiration]: Inspiration taken from visualizations in [this](https://fivethirtyeight.com/features/more-women-are-holding-political-office-but-not-everywhere/) FiveThirtyEight article.
