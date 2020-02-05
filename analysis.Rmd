@@ -37,7 +37,7 @@ load("data/missed_opp.Rdata")
 
 # Introduction 🗳️
 
-The inspiration for this project came during the 2018 midterm election when I came across a Twitter account called [`@PizzaToThePolls`](https://twitter.com/PizzaToThePolls). On the election Day, Pizza to the Polls was tweeting about delivering pizzas to polling locations across the United States ([sample tweet](https://twitter.com/PizzaToThePolls/status/106003539396866048) below). 
+The inspiration for this project came during the 2018 midterm election when I came across a Twitter account called [`@PizzaToThePolls`](https://twitter.com/PizzaToThePolls). On the election Day, Pizza to the Polls was tweeting about delivering pizzas to polling locations across the United States. 
 
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Pizza 1300 S Grand Ave, Santa Ana, CA 92705, USA?<br>. ∧＿∧ <br> (´･ω･)<br>　 |　⌒Ｙ⌒　/ /<br>　 \ヽ　 ｜　 ﾉ／<br>　　＼ ﾄー🍕ーｲ /<br>　　 ｜ ミ土彡 ｜<br> <br>5 pizzas ABSOLUTELY <br> <br>via <a href="https://t.co/34xXjQiPJc">https://t.co/34xXjQiPJc</a></p>&mdash; Pizza to the Polls (@PizzaToThePolls) <a href="https://twitter.com/PizzaToThePolls/status/1060035393968660480?ref_src=twsrc%5Etfw">November 7, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
@@ -49,20 +49,15 @@ The goal of this project is to collect the polling locations where Pizza to the 
 4. present recommenations for how Pizza to the Polls can improve its outreach for the upcoming election;
 5. share what I learned from this project. 
 
-**NB**: One core assumption that I carry throughout this report is that Pizza to the Polls did not send pizzas to polling locations in advance before receiving a third party report of a long line.
-
-
-# Data 
+**NB**a 
 
 ## About Pizza To the Polls 
 
 <img src="fig/PizzaToThePolls_logo.png" alt="logo" width="200"/>
 
-[Pizza to the Polls](https://polls.pizza/about/) (abbreviated PttP🍕) is a 501(c)(4) nonprofit organization that receives reports about long polling lines on various social media platforms and puts in a request to deliver pizzas to those polling locations.[^more_on_TPT]
+[Pizza to the Polls](https://polls.pizza/about/) (abbreviated PttP🍕) is a 501(c)(4) nonprofit organization that receives reports about long polling lines on various social media platforms and requests pizza deliveries to polling locations.[^more] Although PttP🍕 is not officially affiliated with any political party in the United States, there is an obvious partisan flavor to their Twitter activity. The account primarily follows progressive advocacy groups, liberal media figures, and Democratic politicians. To be clear, unlike 501(c)(3) organizations, 501(c)(4) organizations are allowed to engage in lobbying activity so long as the purpose is to promote their social welfare objectives. Additionally, they do not lose their tax-exemption status from engaging in electoral campaign activities (i.e. activities influencing electoral results or advocating for a candidate) so long as those activities remain secondary to their primary missions.[^secondary] 
 
-[^more_on_TPT]:[This article](https://zapier.com/blog/pizza-to-the-polls-automation/?utm_medium=social&utm_source=twitter) from *zapier* explains how the organization delivers pizzas. 
-
-Although PttP🍕 is not officially affiliated with any political party in the United States, there is an obvious partisan flavor to their Twitter activity. The account primarily follows progressive advocacy groups, liberal media figures, and Democratic politicians. To be clear, unlike 501(c)(3) organizations, 501(c)(4) organizations are allowed to engage in lobbying activity so long as the purpose is to promote their social welfare objectives. Additionally, they do not lose their tax-exemption status from engaging in electoral campaign activities (i.e. activities influencing electoral results or advocating for a candidate) so long as those activities remain secondary to their primary missions.[^secondary] 
+[^more]:[This article](https://zapier.com/blog/pizza-to-the-polls-automation/?utm_medium=social&utm_source=twitter) from *zapier* explains how the organization delivers pizzas. 
 
 [^secondary]: From the IRS website, https://www.irs.gov/charities-non-profits/other-non-profits/social-welfare-organizations. 
 
@@ -190,12 +185,9 @@ governor_sum %>% kable(format = "html", caption = "Governor races, unit = states
 
 # Interactive map exported as Shiny app
 
-I created [an interactive map](https://asakomikami.shinyapps.io/pizza_to_the_polls/) with `tmap` package (v2.3.1) in R. There are markers placed on polling locations where pizzas were delivered; the number on the markers counts the number of deliveries made to that location. The map has three layers. The layers color the districts or states that held key races for House, Senate, and governor seats. 
+I created [an interactive map](https://asakomikami.shinyapps.io/pizza_to_the_polls/) with `tmap` package (v2.3.1) in R and published it as a RShiny app. There are markers placed on polling locations where pizzas were delivered; the number on the markers counts the number of deliveries made to that location. The map has three layers. The layers color the districts or states that held key races for House, Senate, and governor seats. 
 
-
-```{r shiny_app, fig.cap = "fig/map_screenshot.png"}
-```
-
+<a href="https://asakomikami.shinyapps.io/pizza_to_the_polls/"><img src="fig/screenshot_map.png" alt="2018 midterm pizza deliveries" height="400px"></a>
 
 # Analysis
 
@@ -370,8 +362,7 @@ I am also interested in identifying missed opportunities, i.e. districts where n
 knitr::include_graphics(path = "fig/pscore_hist.png")
 ```
 
-Propensity score is the probability of having `zero == TRUE`. Naturally, the mass of the histogram below the 0 line is shifted towards the left. However, there are also a few districts in the histogram above the 0 line that relatively low propensity scores. I define missed opportunities as districts with `zero == TRUE` that have propensity score below 0.65, and they are displayed below. To give a better 
-idea of the values of the numeric variables, I have binned these variables into deciles (`medianHouseInc_q`, `totalPop_q`, `blackPopShare_q`, `age18to24_q`). 
+Propensity score is the probability of having `zero == TRUE`. Naturally, the mass of the histogram below the 0 line is shifted towards the left. However, there are also a few districts in the histogram above the 0 line that relatively low propensity scores. I define missed opportunities as districts with `zero == TRUE` that have propensity score below 0.65, which are displayed below. To make the values of numeric variables more comprehensible, I have binned these variables into deciles (`medianHouseInc_q`, `totalPop_q`, `blackPopShare_q`, `age18to24_q`). 
 
 ```{r}
 missed_opp %>% rmarkdown::paged_table()
@@ -383,7 +374,7 @@ None of the district detectedace, continuing the trend we've seen in the main re
 
 If I were working at Pizza to the Polls and was tasked with improving the organization's outreach for the upcoming 2020 election, I would make two recommendations to their operation. First is to **pay attention to key Senate and gubernatorial elections**. Although the probability that the Democrats would take the Senate was low, voters waiting to vote for the key Senate elections were more likely to know and contact Pizza to the Polls than those voting in key House districts. On the other hand, Democrats were vying to win key governorships such as Floria. Georgia where Stacey Abrams was running for governor was also the state that had much controversy over deliberate voter suppression before the election. It is unsurprising that the largest number of pizza deliveries to a single polling location was observed in Georgia. Since senators and governors are elected by the whole state, reaching out to candidates running for these offices is a more efficient way of spreading information about Pizza to the Polls.
 
-My second recommendation is to **reach out to women candidates**. All the districts named as missed opportunities were districts where a woman was running for the House, Senate, or governor. [Past studies](https://fivethirtyeight.com/features/democrats-primaries-candidates-demographics/) have shown that women are less likely than men to run for office. Even though 2018 saw a remarkable number of women challengers on the ballot across the country, they were still more likely than their male counterpart to have had experience as elected officials. Women tend to set higher bars on themselves when making a career choice in politics, and they still face [explicit and implicit sexism](https://fivethirtyeight.com/audio-features/when-women-run/) while on the campaign trail and in office. Thus, although many of the missed opportunities were not one of the key races of 2018 Midterm, supporting women breaking into higher offices would align naturally with PttP🍕's democratic agenda. I would recommend Pizza to the Polls to actively engage with campaigns of women candidates and spread awarenss of the organization. 
+My second recommendation is to **reach out to women candidates**. All the districts named as missed opportunities were districts where a woman was running for the House, Senate, or governor. [Past studies](https://fivethirtyeight.com/features/democrats-primaries-candidates-demographics/) have shown that women are less likely than men to run for office. Even though 2018 saw a remarkable number of women challengers on the ballot across the country, they were still more likely than their male counterpart to have had experience as elected officials. Women tend to set higher bars on themselves when making a career choice in politics, and they still face [explicit and implicit sexism](https://fivethirtyeight.com/audio-features/when-women-run/) while on the campaign trail and in office. Thus, although many of the missed opportunities were not one of the key races of 2018 Midterm, supporting women breaking into higher offices would naturally align with PttP🍕's democratic agenda as evidenced by my bag-of-words analysis. I would recommend Pizza to the Polls to actively engage with campaigns of women candidates and spread awarenss of the organization. 
 
 
 # Personal commentary
@@ -394,6 +385,4 @@ Majority of my time was spent on **cleaning and augmenting the data** by scrapin
 
 This project made a heavy use of API's: Twitter API, Google's Geocoding API, and US Census API. I tried three ways of **storing credentials**: saving keys in credential files, saving keys in the system environment, and [saving keys in a .env file](http://jonathansoma.com/lede/foundations-2019/classes/apis/keeping-api-keys-secret/). I ended up sticking to the third method for two reasons. First, `dotenv` package is available both for Python and R. Second, since I had to regenerate the API keys more than once during this project, I liked having a file that I could easily edit instead of opening the system environment through the terminal. Additionally, I finally learned the utility of .gitignore. 
 
-Finally, this project has motivated me to learn more data visualization techniques. I **am not quite happy**ualizations I produced in this project including the interactive map, which takes too much time to load. Even for the simpler plots, I would like to learn d3.js to incorporate [William Chase's visualiation tips](https://www.williamrchase.com/slides/assets/player/KeynoteDHTMLPlayer.html#0) such as using colored text in plot titles [instead of legends](https://twitter.com/djnavarro/status/1222952500237520897?s=20). I think I can do more cool visualizations using `ggfacet`.[^inspiration]
-
-[^inspiration]: Inspiration taken from visualizations in [this](https://fivethirtyeight.com/features/more-women-are-holding-political-office-but-not-everywhere/) FiveThirtyEight article.
+Finally, this project has motivated me to learn more about **data visualization**. There are many `ggplot2`-related packages out there like `ggfacet` that I haven't taken advantage of. Even for the simple plots, there are simple modifications that I wanted to do such as using colored text in titles [instead of legends](https://twitter.com/djnavarro/status/1222952500237520897?s=20).
