@@ -1,18 +1,18 @@
 
-This project locates long polling lines based on tweets posted by Pizza to the Polls, a nonprofit org that delivers pizzas to voters waiting in line, on 2018 Midterm Election day. I investigate the profile of voters who were potentially engaging with Pizza to the Polls, and identify missed opportunities and recommend how PttP can increase its outreach for the upcoming 2020 Election. 
+oject locates long polling lines based on tweets posted by Pizza to the Polls, a nonprofit org that delivers pizzas to voters waiting in line, on 2018 Midterm Election day. I investigate the profile of voters who were potentially engaging with Pizza to the Polls, and identify missed opportunities and recommend how PttP can increase its outreach for the upcoming 2020 Election. 
 
 Full report available at RPubs: https://rpubs.com/afmikami/pizza_to_the_polls.
 
 Shiny app of interactive map: https://asakomikami.shinyapps.io/pizza_to_the_polls/.
 
-# What to expect in this project:
+# What to expect in this project 🍕
 
 - **Data collection**: Twitter API, Google's Geocoding API, scraping Wikipedia articles
 - **Visualization**: interactive map, histograms
 - **Data analysis**: Bag of words, Poisson regression, negative binomial count model, propensity score calculation with logistic regression
 
 
-# Tutorials based on this project
+# Tutorials based on this project 🍕
 
 I am also writing a series of blog posts on how to use Twitter API to make search requests with premium subscription. 
 
@@ -21,7 +21,7 @@ I am also writing a series of blog posts on how to use Twitter API to make searc
 - "Scraping Wikipedia pages" (forthcoming)
 - "Creating an interactive map with spatial points and polygon data" (forthcoming)
 
-# Repository organization
+# Repository organization 🍕
 
 ```
 |-- README.md
