@@ -64,9 +64,10 @@ governor_races <- import("data/csv/gubernatorial_elections_2018_merged.csv",
         dplyr::select(-V1) %>%
         rename(share1 = percentage1, share2 = percentage2) %>%
         mutate(key = ifelse(state %in% governor_key, TRUE, FALSE),
+               name_woman = na_if(name_woman, ""),
                woman1 = ifelse(!is.na(name_woman), TRUE, FALSE),
-               woman2 = FALSE, 
-               women = factor(woman1, levels = c(0, 1, 2), exclude = NULL)
+               woman2 = FALSE,
+               women = factor(woman1 + woman2, levels = c(0, 1, 2), exclude = NULL)
                ) %>%
         dplyr::select(-ends_with("_woman"))
 

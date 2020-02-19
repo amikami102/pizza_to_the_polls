@@ -22,7 +22,10 @@ d <- mod_df %>% mutate(prob0 = predict(mod_log, type = "response")) %>%
 color <- brewer.pal(n=3, "Set2")
 ggplot(d) + 
         geom_histogram(bins = 50, aes(zero_pTRUE), fill = color[1]) + 
-        geom_histogram(bins = 50, aes(x = zero_pFALSE, y = -..count..), fill = color[2]) + 
+        geom_label( aes(x=0.95, y= 20, label="Zeros"), color=color[1]) +
+        geom_histogram(bins = 50, aes(x = zero_pFALSE, y = -..count..), 
+                       fill = color[2]) + 
+        geom_label( aes(x=0.95, y=-5, label="Non-zeros"), color=color[2]) +
         ylab("count") + xlab("propensity score") +
         geom_hline(yintercept = 0, lwd = 0.5) +
         scale_y_continuous(labels = abs) +
@@ -30,7 +33,7 @@ ggplot(d) +
              caption = "The histogram above the 0 line is the distribution of 
             propensity score among zero == TRUE, and below the 0 line is the 
             distribution of propensity score among zero == FALSE.") + 
-        theme_minimal() 
+        theme_minimal(base_size = 12) 
 ggsave(filename = "fig/pscore_hist.png")
 
 # identify missed opportunites 

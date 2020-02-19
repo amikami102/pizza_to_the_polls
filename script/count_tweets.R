@@ -29,7 +29,8 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
 ggplot(data = raw_counts, mapping = aes(x = timePeriod, y = count)) + 
         geom_bar(stat = "identity", fill = cbPalette[4]) +
         labs(title = "Tweets per hour", x = "Hour", y = "Count") +
-        theme_minimal() 
+        #theme(text = element_text(size=20)) +
+        theme_minimal(base_size = 15) 
 ggsave("fig/tweets_per_hour.png")
 
 ## @knitr parsed_counts
@@ -63,11 +64,13 @@ parsed_counts <- raw_counts %>%
         mutate_if(is.numeric, ~replace(., is.na(.), 0))
 
 ## @knitr ggplot_parsed_counts
-ggplot(data = counts, mapping = aes(x = timePeriod, y = count_parsed)) +
+ggplot(data = parsed_counts, 
+       mapping = aes(x = timePeriod, y = count_parsed)) +
         geom_bar(stat = "identity", fill = cbPalette[4]) + 
         labs(title = "Tweets per hour containing street address",
              x = "Hour", y = "Count") + 
-        theme_minimal()
+        #theme(text = element_text(size=20)) + 
+        theme_minimal(base_size = 15)
 ggsave("fig/parsed_tweets_per_hour.png")
 
 
