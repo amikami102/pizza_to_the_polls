@@ -1,5 +1,5 @@
 
-This project locates long polling lines based on tweets posted by Pizza to the Polls, a nonprofit organization that delivers pizzas to voters waiting in line, on 2018 Midterm Election day. I investigate the profile of voters who were potentially engaging with Pizza to the Polls, and identify missed opportunities and recommend how PttP can increase its outreach for the upcoming 2020 Election. 
+This project locates long polling lines in the United States using Twitter data. The tweets come from Pizza to the Polls, a nonprofit organization that delivers pizzas to voters waiting in line, on 2018 Midterm Election day. I investigate which districts were in contact with Pizza to the Polls on 2018 Midterm Election Day and how the organization can improve its outreach for the 2020 election based on the data. 
 
 Full report available at RPubs: https://rpubs.com/afmikami/pizza_to_the_polls.
 
@@ -14,12 +14,12 @@ Shiny app of interactive map: https://asakomikami.shinyapps.io/pizza_to_the_poll
 
 # Tutorials based on this project 🍕
 
-I am also writing a series of blog posts on how to use Twitter API to make search requests with premium subscription. 
+The main data collection task was using Twitter API to collect the tweets, cleaning them, and then converting the street addresses to geocoordinates with Google's Geocoding API. I have written a three-part tutorial series explaining how to use these API's and extract street addresses from text strings. 
 
-- ["Collecting and parsing tweets, part I"](https://asakomikami.com/2019/05/29/webscraping-twitter-part1/)
-- "Collecting and parsing tweets, part II" (forthcoming)
-- "Scraping Wikipedia pages" (forthcoming)
-- "Creating an interactive map with spatial points and polygon data" (forthcoming)
+- ["Collecting and parsing tweets, part I"](https://asakomikami.com/2019/05/29/collecting-and-parsing-tweets-part1/)
+- ["Collecting and parsing tweets, part II"](https://asakomikami.com/2019/06/03/collecting-and-parsing-tweets-part2/)
+- ["Collecting and parsing tweets, part III"](https://asakomikami.com/2020/03/01/collecting-and-parsing-tweets-part3/)
+
 
 # Repository organization 🍕
 
@@ -31,7 +31,7 @@ I am also writing a series of blog posts on how to use Twitter API to make searc
 |-- fig/                        # figure outputs 
 |-- script/     
         |-- friends_of_PTTP/    # .py scripts for looking up users on Twitter API
-        |-- map/                # .R scripts for making
+        |-- map/                # .R scripts for making the interactive map
         |-- scrape_tweets/      # .py scripts for Twitter API and parsing tweets
         |-- scrape_wiki/        # .py scripts for scraping Wikipedia pages 
         |-- women/               # .py scripts for scraping CAWP page
