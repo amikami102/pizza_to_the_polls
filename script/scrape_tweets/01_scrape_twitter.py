@@ -39,7 +39,7 @@ log.addHandler(loghandler)
 
 """ STEP 0: OAuth2 Authorization """
 
-# Load my credentials from json file
+# Load my credentials .env file
 client_key = os.getenv('twitter_api_key')
 client_secret = os.getenv('twitter_api_secret')
 
