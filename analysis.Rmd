@@ -3,9 +3,6 @@ title: "Locating Long Polling Lines with Twitter Data 🍕🗳🇺🇸️"
 author: "Asako Mikami"
 date: '`r format(Sys.time(), "%B %e, %Y")`'
 output: 
-    prettydoc::html_pretty:
-        default: true
-        theme: leonids
     bookdown::html_document2:
         df_print: paged
         toc: true
@@ -38,24 +35,30 @@ load("data/missed_opp.Rdata")
 
 # Introduction 🗳️
 
-The inspiration for this project came during the 2018 midterm election when I came across a Twitter account called [`@PizzaToThePolls`](https://twitter.com/PizzaToThePolls). On Election Day, Pizza to the Polls was tweeting about delivering pizzas to polling locations across the United States. 
+The inspiration for this project came during the 2018 midterm election when I came across a Twitter account called [`@PizzaToThePolls`](https://twitter.com/PizzaToThePolls). On Election Day, Pizza to the Polls was tweeting about delivering pizzas to polling locations across the United States. These tweets, like the one below, contained street addresses of polling locations where long waiting times could turn away voters and reduce voter turnout lest they be deterred to do so with pizzas. 
 
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Pizza 1300 S Grand Ave, Santa Ana, CA 92705, USA?<br>. ∧＿∧ <br> (´･ω･)<br>　 |　⌒Ｙ⌒　/ /<br>　 \ヽ　 ｜　 ﾉ／<br>　　＼ ﾄー🍕ーｲ /<br>　　 ｜ ミ土彡 ｜<br> <br>5 pizzas ABSOLUTELY <br> <br>via <a href="https://t.co/34xXjQiPJc">https://t.co/34xXjQiPJc</a></p>&mdash; Pizza to the Polls (@PizzaToThePolls) <a href="https://twitter.com/PizzaToThePolls/status/1060035393968660480?ref_src=twsrc%5Etfw">November 7, 2018</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-The goal of this project is to collect the polling locations where Pizza to the Polls delivered pizzas on the 2018 Midterm Election and learn about the profile of voters who reached out to Pizza to the Polls. The rest of the analysis proceeds as follows:
+There are reasons to collect data on polling locations. Lengthy lines clearly suggest that there is not enough voting booths/machines or locations open to accomodate the size of the voting population in the district. One could either interpret this as an unfortunate result of local government's lack of resources or, less benignly, [a predetermined outcome of an attempt to suppress voter turnout](https://www.wired.com/story/georgia-voting-machine-issues-heighten-scrutiny-brian-kemp/). Since there is neither public database of polling locations nor has there been a study attempting to collect such data at national level, the public has very little information on their access to voting.
 
-1. explain data collection method;
-2. create an interactive map of the polling addresses;
-3. conduct exploratory analysis (bag-of-words and regression);
-4. present recommenations for how Pizza to the Polls can improve its outreach for the upcoming election;
-5. share what I learned from this project. 
+I have collected, parsed, and geocoded about 160 unique street addresses contained in the tweets posted by Pizza to the Polls. Unfortunately, the sample size is too small for the data to be used to draw generalizable inference on voter access. Therefore, I have narrowed down the scope of this project to answer the question, "What does the data tell me about Pizza to the Polls's level of outreach?" I find that Pizza to the Polls were delivering pizzas to voters in districts that were holding key Senate races and where women candidates were running for office. 
 
 
-## About Pizza To the Polls 
+The rest of the report proceeds as follows:
+
+1. briefly introduce Pizza to the Polls and their activities;
+2. explain the data collection method;
+3. create an interactive map of the polling addresses;
+4. conduct exploratory analysis (bag-of-words and regression);
+5. present recommenations for how Pizza to the Polls can improve its outreach for the upcoming election;
+6. discuss the limitations and avenues for future research. 
+
+
+## Pizza To the Polls
 
 <img src="fig/PizzaToThePolls_logo.png" alt="logo" width="200"/>
 
-[Pizza to the Polls](https://polls.pizza/about/) (abbreviated PTTP) is a 501(c)(4) nonprofit organization that receives reports about long polling lines on various social media platforms and requests pizza deliveries to polling locations.[^more] Although PTTP is not officially affiliated with any political party in the United States, there is an obvious partisan flavor to their Twitter activity (more detais below). To be clear, unlike 501(c)(3) organizations, 501(c)(4) organizations are allowed to engage in lobbying activity so long as the purpose of lobbying is to promote their social welfare objectives. They also do not lose their tax-exemption status from engaging in electoral campaign activities (i.e. activities influencing electoral results or advocating for a candidate) so long as those activities remain secondary to their primary missions.[^secondary] 
+[Pizza to the Polls](https://polls.pizza/about/) (abbreviated PTTP) is a 501(c)(4) nonprofit organization that receives reports about long polling lines on various social media platforms and requests pizza deliveries to polling locations.[^more] Although PTTP is not officially affiliated with any political party in the United States, there is an obvious partisan flavor to their Twitter activity (more detais below). To be clear, unlike 501(c)(3) organizations, 501(c)(4) organizations are allowed to engage in lobbying activity so long as the purpose is to promote their social welfare objectives. They do not lose their tax-exemption status from engaging in electoral campaign activities (i.e. activities influencing electoral results or advocating for a candidate) so long as those activities remain secondary to their primary missions.[^secondary] 
 
 [^more]:[This article](https://zapier.com/blog/pizza-to-the-polls-automation/?utm_medium=social&utm_source=twitter) from *zapier* explains how the organization delivers pizzas. 
 
@@ -360,20 +363,9 @@ None of the districts in the table had key House races, continuing the trend we'
 
 # Lessons for the 2020 election
 
-If I were working at Pizza to the Polls and was tasked with improving the organization's outreach for the upcoming 2020 election, I would make two recommendations to their operation. First is to **pay attention to key Senate and gubernatorial elections**. Although the probability that the Democrats would take the Senate was low, voters waiting to vote for the key Senate elections were more likely to know and contact Pizza to the Polls than those voting in key House districts. On the other hand, Democrats were vying to win key governorships such as Floria. Georgia where Stacey Abrams was running for governor was also the state that had much controversy over deliberate voter suppression before the election. It is unsurprising that the largest number of pizza deliveries to a single polling location was observed in Georgia. Since senators and governors are elected by the whole state, reaching out to candidates running for these offices is a more efficient way of spreading information about Pizza to the Polls.
+If I were working at Pizza to the Polls and was tasked with improving the organization's outreach for the upcoming 2020 election, I would make two recommendations to their operation team. First is to **pay attention to key Senate and gubernatorial elections**. Although the probability that the Democrats would take the Senate was low, voters waiting to vote for the key Senate elections were more likely to know and contact Pizza to the Polls than those voting in key House districts. On the other hand, Democrats were vying to win key governorships such as Floria. Georgia where Stacey Abrams was running for governor was also the state that had much controversy over deliberate voter suppression before the election. It is unsurprising that the largest number of pizza deliveries to a single polling location was observed in Georgia. Since senators and governors are elected by the whole state, reaching out to candidates running for these offices is a more efficient way of spreading information about Pizza to the Polls.
 
 My second recommendation is to **reach out to women candidates**. All the districts named as missed opportunities were districts where a woman was running for the House, Senate, or governor. [Past studies](https://fivethirtyeight.com/features/democrats-primaries-candidates-demographics/) have shown that women are less likely than men to run for office. Even though 2018 saw a remarkable number of women challengers on the ballot across the country, they were still more likely than their male counterpart to have had experience as elected officials. Women tend to set higher bars on themselves when making a career choice in politics, and they still face [explicit and implicit sexism](https://fivethirtyeight.com/audio-features/when-women-run/) while on the campaign trail and in office. Thus, although many of the missed opportunities were not one of the key races of 2018 Midterm, supporting women breaking into higher offices would naturally align with PTTP's democratic agenda as evidenced by my bag-of-words analysis. I would recommend Pizza to the Polls to actively engage with campaigns of women candidates and spread awarenss of the organization. 
 
 
-# Personal commentary
-
-This is a full-stacked project where I collected the data myself (with my own money) and conducted much analysis as I can to get the most out of the data. 
-
-Majority of my time was spent on **cleaning and augmenting the data** by scraping election results from Wikipedia and external sources and merging them together. Even while doing the final analysis, I have had to go back to my code to fix incorrect entries, which attests to how [important](https://hackernoon.com/the-ai-hierarchy-of-needs-18f111fcc007) this [underrated](https://twitter.com/vboykis/status/1054408259149299712?s=20) process is. 
-
-This project made a heavy use of API's: Twitter API, Google's Geocoding API, and US Census API. I tried three ways of **storing credentials**: saving keys in credential files, saving keys in the system environment, and [saving keys in a .env file](http://jonathansoma.com/lede/foundations-2019/classes/apis/keeping-api-keys-secret/). I ended up sticking to the third method for two reasons. First, `dotenv` package is available both for Python and R. Second, since I had to regenerate the API keys more than once during this project, I liked having a file that I could easily edit instead of opening the system environment through the terminal. Additionally, I finally learned the utility of .gitignore. 
-
-Third, this project has motivated me to learn more about **data visualization**. There are many `ggplot2`-related packages out there like `ggfacet` that I haven't used yet. Even for the simple plots, there are simple modifications that I wanted to do such as using colored text in titles [instead of legends](https://twitter.com/djnavarro/status/1222952500237520897?s=20).
-
-Lastly, I was surprised and delighted by how much I was able to learn from the data. At first I was disappointed to have only identified 160 or so polling locations as it was too small a sample size for an academic publication. But I didn't want all the data I collected and processed to go to waste, so I changed my goal by **taking the perspective of Pizza to the Polls and asking what the data tells me about the organization's level of outreach**. As a result, I was able to construct more narrow questions that my data could answer. This experience has taught me how fulfilling doing data science outside of academic research can be. 
 
