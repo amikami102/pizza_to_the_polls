@@ -14,11 +14,7 @@ Shiny app of interactive map: https://asakomikami.shinyapps.io/pizza_to_the_poll
 
 # Tutorials based on this project 🍕
 
-The main data collection task was using Twitter API to collect the tweets, cleaning them, and then converting the street addresses to geocoordinates with Google's Geocoding API. I have written a three-part tutorial series explaining how to use these API's and extract street addresses from text strings. 
-
-- ["Collecting and parsing tweets, part I"](https://asakomikami.com/2019/05/29/collecting-and-parsing-tweets-part1/)
-- ["Collecting and parsing tweets, part II"](https://asakomikami.com/2019/06/03/collecting-and-parsing-tweets-part2/)
-- ["Collecting and parsing tweets, part III"](https://asakomikami.com/2020/03/01/collecting-and-parsing-tweets-part3/)
+The main data collection task was using Twitter API to collect the tweets, cleaning them, and then converting the street addresses to geo-coordinates with Google's Geocoding API.
 
 
 # Repository organization 🍕
