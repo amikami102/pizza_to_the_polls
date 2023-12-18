@@ -11,12 +11,6 @@ Shiny app of interactive map: https://asakomikami.shinyapps.io/pizza_to_the_poll
 - **Visualization**: interactive map, histograms
 - **Data analysis**: Bag of words, Poisson regression, negative binomial count model, propensity score calculation with logistic regression
 
-
-# Tutorials based on this project 🍕
-
-The main data collection task was using Twitter API to collect the tweets, cleaning them, and then converting the street addresses to geo-coordinates with Google's Geocoding API.
-
-
 # Repository organization 🍕
 
 ```
